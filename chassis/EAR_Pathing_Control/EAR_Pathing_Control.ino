@@ -12,7 +12,7 @@ This code is currently in it's bare bones stages. I've written so far what needs
 //////////////////////////////////////////////////////////////////////////////////////
 //Speed Control
   int vSpeed = 80;                  // MAX 255
-  int turn_speed = 170;              // MAX 255 
+  int turn_speed = 100;              // MAX 255 
   int turn_delay = 10;
   
 //Motor Control Connections
@@ -65,8 +65,8 @@ if(front_right_IR_state > 500 && front_left_IR_state < 500)
 
   digitalWrite(in1,LOW); 
   digitalWrite (in2,HIGH);                      
-  digitalWrite(in3,LOW);
-  digitalWrite (in4,HIGH);
+  digitalWrite(in3,HIGH);
+  digitalWrite (in4,LOW);
 
   analogWrite (left_wheel_enable, vSpeed);
   analogWrite (right_wheel_enable, turn_speed);
