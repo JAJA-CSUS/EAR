@@ -113,6 +113,6 @@ if(front_right_IR_state > 500 && front_left_IR_state > 500)
   analogWrite (right_wheel_enable, 0);
   } 
   
-  delay(300); //run through code every .3 second
+  delay(200); //run through code every .3 second
         
 }//end of main
