@@ -187,7 +187,14 @@ def EandD():
 	master.destroy()
 	GPIO.cleanup()
 
-photo = tk.PhotoImage(file = r"/home/pi/Documents/PiFun/UI/EAR/gui/greetimg2.png")
+def LoopCapture():
+	try:
+		photo = tk.PhotoImage(file = r"/home/pi/Documents/PiFun/UI/EAR/gui/greetimg2.png")
+	except:
+		photo = tk.PhotoImage(file = r"/home/pi/Documents/PiFun/UI/EAR/gui/greetimg.png")
+	
+		
+LoopCapture()
 Cubby1StoreButton = tk.Button(master, text="GPIO 21 Cubby 1", image = photo, command=cubby1Button)
 Cubby1StoreButton.grid(row=1, column=0, ipadx=20, ipady=20)
 Cubby2StoreButton = Button(master, text="GPIO 20 Cubby 2", command=cubby2Button)
@@ -197,5 +204,4 @@ Cubby3StoreButton.grid(row=1, column=2, ipadx=20, ipady=20)
 Cubby4StoreButton = Button(master, text="GPIO XX Cubby 3", command=cubby4Button)
 Cubby4StoreButton.grid(row=1, column=3, ipadx=20, ipady=20)
 ExitButton()
-
 master.mainloop()
