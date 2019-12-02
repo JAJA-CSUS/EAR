@@ -11,7 +11,7 @@ This code is currently in it's bare bones stages. I've written so far what needs
 //                        Variable Declaration Section                              //
 //////////////////////////////////////////////////////////////////////////////////////
 //Speed Control
-  int vSpeed = 100;                  // MAX 255
+  int vSpeed = 120;                  // MAX 255
   int turn_speed = 100;              // MAX 255 
   int turn_delay = 10;
   
