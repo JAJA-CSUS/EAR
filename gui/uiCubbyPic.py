@@ -187,8 +187,8 @@ def EandD():
 	master.destroy()
 	GPIO.cleanup()
 
-self.photo = PhotoImage(file = r"./greetimg2.png")
-Cubby1StoreButton = tk.Button(master, text="GPIO 21 Cubby 1", image = self.photo, command=cubby1Button)
+photo = tk.PhotoImage(file = r"/home/pi/Documents/PiFun/UI/EAR/gui/greetimg2.png")
+Cubby1StoreButton = tk.Button(master, text="GPIO 21 Cubby 1", image = photo, command=cubby1Button)
 Cubby1StoreButton.grid(row=1, column=0, ipadx=20, ipady=20)
 Cubby2StoreButton = Button(master, text="GPIO 20 Cubby 2", command=cubby2Button)
 Cubby2StoreButton.grid(row=1, column=1, ipadx=20, ipady=20)
