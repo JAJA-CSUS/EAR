@@ -255,6 +255,6 @@ void loop() {
           break;
       }
   }
-  ns = cs;
+  //ns = cs;
   delay(50); // may have to switch this back to 200?
 }
