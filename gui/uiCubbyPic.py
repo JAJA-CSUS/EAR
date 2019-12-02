@@ -19,6 +19,7 @@ space1=False #space 1 is initially empty
 space2=False
 space3=False
 space4=False
+photo
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(cubby1, GPIO.OUT,initial=GPIO.LOW)
