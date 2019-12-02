@@ -1,5 +1,6 @@
 /*
 Author: Angelica Smith-Evans
+        Jeremy Shaw
 
 */
 
@@ -103,7 +104,7 @@ void loop() {
             cs = 2;
         break;
 
-        //path along black line
+        //path towards shelves along black line
         case 2:
               if(front_right_IR_state > 500 && front_left_IR_state < 500)
               {
@@ -166,6 +167,8 @@ void loop() {
                 cs = 2;
               }
         break;
+        
+        //move arm upwards to pick up cubby
         case 3:
           // counterclockwise ==> going up
           myStepper.step(stepsPerRevolution);
