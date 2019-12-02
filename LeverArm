@@ -1,0 +1,20 @@
+//Moves a stepper motor between positive and negative positions defined in moveTo() function
+
+#include <AccelStepper.h> //Must include the AccelStepper library
+
+// Define your stepper motor
+AccelStepper liftingStepper; // Default pins on Arduino Uno are 2, 3, 4, 5
+
+void setup()
+{
+  liftingStepper.setMaxSpeed(750); // Set the stepper motor speed
+  liftingStepper.setAcceleration(250); // Set the stepper acceleration
+  liftingStepper.moveTo(500); // Will be used as the positive and negative boundary of the stepper motor
+}
+void loop()
+
+{
+    if (liftingStepper.distanceToGo() == 0) // Check to make sure the stepper motor does not still need to move
+    liftingStepper.moveTo(-liftingStepper.currentPosition()); // Move the stepper motor to the other position
+    liftingStepper.run(); // Actually makes the motor run
+}

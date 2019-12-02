@@ -113,7 +113,7 @@ void demoThree()
  
   analogWrite (enA, 110);
   analogWrite (enB, 110);
-  }
+  
  /*
   //turn robot to right
   Serial.println("turning right");
