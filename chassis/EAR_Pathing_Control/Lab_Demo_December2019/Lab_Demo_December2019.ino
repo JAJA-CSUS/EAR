@@ -23,6 +23,9 @@ Author: Angelica Smith-Evans
   int in3 = 7;                       //in3 pin connected to UNO pin 7 to control RW Motor
   int in4 = 6;                       //in4 pin connected to UNO pin 6 to control RW Motor
 
+// Stepper enables
+  int StepBridged = 12;
+
 //Proximity Sensor Connections
   const int front_left_IR = A0;             // connect the front left IR sensor to pin A0
   const int front_right_IR = A1;            // connect the front right IR sensor to pin A1
@@ -66,12 +69,13 @@ void setup()
 void loop() {
   while(1)
   {
-  
     button1State = digitalRead(button1Pin);             //read value from button1
-    Serial.println("Button 1 state");
-    Serial.println(button1State);
-    Serial.println("cs");
+    Serial.print("Button 1 state = ");
+    Serial.print(button1State);
+    Serial.print("; cs ");
     Serial.println(cs);
+    front_left_IR_state = analogRead(front_left_IR);    //read value from FL sensor and store value in front_left_IR_state 
+    front_right_IR_state = analogRead(front_right_IR);  //read value from FR sensor and store value in front_right_IR_state
       //switch to state 1 if button1 is pressed
       switch (cs) {
         case 0:
@@ -101,8 +105,6 @@ void loop() {
 
         //path along black line
         case 2:
-              front_left_IR_state = analogRead(front_left_IR);    //read value from FL sensor and store value in front_left_IR_state 
-              front_right_IR_state = analogRead(front_right_IR);  //read value from FR sensor and store value in front_right_IR_stat
               if(front_right_IR_state > 500 && front_left_IR_state < 500)
               {
               Serial.println("turning left--right side IR off");
@@ -165,16 +167,91 @@ void loop() {
               }
         break;
         case 3:
-            // counterclockwise ==> going up
-             myStepper.step(stepsPerRevolution);
-             delay(800);
-             cs = 0;
+          // counterclockwise ==> going up
+          myStepper.step(stepsPerRevolution);
+          Serial.println("STEPPER!");
+          delay(800);
+          cs = 4;
         break;
+
+        //nudge backwards
+        case 4:
+            analogWrite(left_wheel_enable, 180);
+            analogWrite(right_wheel_enable, 180);
+            
+            digitalWrite(in1, HIGH);
+            digitalWrite(in2, LOW);  
+            digitalWrite(in3, HIGH);
+            digitalWrite(in4, LOW); 
+            delay(500);
+            cs = 5;
+        break;
+
+        case 5:
+          // go back to start.
+
+          
+          //right side IR sensor detects black line, left side does not
+          if(front_right_IR_state > 500 && front_left_IR_state < 500) {
+            Serial.println("right side IR off");
+            
+            digitalWrite (in1,LOW);
+            digitalWrite(in2,LOW);                       
+            digitalWrite (in3,HIGH);
+            digitalWrite(in4,LOW);
+            
+            analogWrite (left_wheel_enable, vSpeed);
+            analogWrite (right_wheel_enable, turn_speed);
+          }
+          
+          //left side IR sensor detects black line, right side does not
+          if(front_right_IR_state < 500 && front_left_IR_state > 500) {
+            Serial.println("left side IR off");
+            
+            digitalWrite (in1,HIGH);
+            digitalWrite(in2,LOW);                       
+            digitalWrite (in3,LOW);
+            digitalWrite(in4,LOW);
+            
+            analogWrite (left_wheel_enable, turn_speed);
+            analogWrite (right_wheel_enable, vSpeed);
+            
+            delay(turn_delay);
+          }
+          
+          //neither left or right IR sensors detect black line
+          if(front_right_IR_state < 500 && front_left_IR_state < 500) {
+            Serial.println("going backward");
+            
+            digitalWrite(in1,HIGH); 
+            digitalWrite (in2,LOW);                      
+            digitalWrite(in3,HIGH);
+            digitalWrite (in4,LOW);
+            
+            analogWrite (left_wheel_enable, vSpeed);
+            analogWrite (right_wheel_enable, vSpeed);
+            
+            delay(turn_delay);
+          }
+          
+          //if front left and front right IR sensors detect line, stop motors
+          if(front_right_IR_state > 500 && front_left_IR_state > 500) { 
+            Serial.println("stop");
+            
+            analogWrite (left_wheel_enable, 0);
+            analogWrite (right_wheel_enable, 0);
+            cs = 0;
+          } else {
+            cs = 5;
+          }
+
+          break;
           
         default:
           //cs = 0;
           break;
       }
   }
-  delay(200);
+  ns = cs;
+  delay(50); // may have to switch this back to 200?
 }
