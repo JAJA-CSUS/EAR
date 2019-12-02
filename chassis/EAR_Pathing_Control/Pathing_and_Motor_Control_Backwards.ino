@@ -11,8 +11,8 @@ This code is currently in it's bare bones stages. I've written so far what needs
 //                        Variable Declaration Section                              //
 //////////////////////////////////////////////////////////////////////////////////////
 //Speed Control
-  int vSpeed = 90;                  // MAX 255
-  int turn_speed = 100;              // MAX 255 
+  int vSpeed = 160;                  // MAX 255
+  int turn_speed = 180;              // MAX 255 
   int turn_delay = 10;
   
 //Motor Control Connections
@@ -69,7 +69,7 @@ if(front_right_IR_state > 500 && front_left_IR_state < 500)
   digitalWrite(in4,LOW);
 
   analogWrite (left_wheel_enable, vSpeed);
- // analogWrite (right_wheel_enable, turn_speed);
+  analogWrite (right_wheel_enable, turn_speed);
   }
   
 //left side IR sensor detects black line, right side does not
@@ -82,7 +82,7 @@ if(front_right_IR_state < 500 && front_left_IR_state > 500)
   digitalWrite (in3,LOW);
   digitalWrite(in4,LOW);
 
-  //analogWrite (left_wheel_enable, turn_speed);
+  analogWrite (left_wheel_enable, turn_speed);
   analogWrite (right_wheel_enable, vSpeed);
 
   delay(turn_delay);
