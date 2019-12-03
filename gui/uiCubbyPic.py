@@ -19,7 +19,7 @@ space1=False #space 1 is initially empty
 space2=False
 space3=False
 space4=False
-photo
+photo = tk.PhotoImage(file = r"/home/pi/Documents/PiFun/UI/EAR/gui/greetimg2.png")
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(cubby1, GPIO.OUT,initial=GPIO.LOW)
@@ -189,6 +189,7 @@ def EandD():
 	GPIO.cleanup()
 
 def LoopCapture():
+	global photo
 	try:
 		photo = tk.PhotoImage(file = r"/home/pi/Documents/PiFun/UI/EAR/gui/greetimg2.png")
 	except:
