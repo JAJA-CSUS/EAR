@@ -4,8 +4,6 @@ Author: Angelica Smith-Evans
 
 */
 
-#include <Stepper.h>
-
 //////////////////////////////////////////////////////////////////////////////////////
 //                        Variable Declaration Section                              //
 //////////////////////////////////////////////////////////////////////////////////////
@@ -24,8 +22,10 @@ Author: Angelica Smith-Evans
   int in3 = 7;                       //in3 pin connected to UNO pin 7 to control RW Motor
   int in4 = 6;                       //in4 pin connected to UNO pin 6 to control RW Motor
 
-// Stepper enables
-  int StepBridged = 12;
+// Stepper defines
+#define dirPin 2
+#define stepPin 3
+#define stepsPerRevolution 200
 
 //Proximity Sensor Connections
   const int front_left_IR = A0;             // connect the front left IR sensor to pin A0
@@ -43,9 +43,6 @@ Author: Angelica Smith-Evans
   int ns = 0;
   int cs = 0;
   
-//Stepper Control
-  const int stepsPerRevolution = 200;
-  Stepper myStepper(stepsPerRevolution, 2, 3, 4, 11);
   
 void setup() 
 {
@@ -61,10 +58,10 @@ void setup()
   pinMode(in3, OUTPUT);
   pinMode(in4, OUTPUT);
 
-  myStepper.setSpeed(45);
+  pinMode(stepPin, OUTPUT);
+  pinMode(dirPin, OUTPUT);
 
   delay(3000);
-
 }
 
 void loop() {
@@ -170,10 +167,18 @@ void loop() {
         
         //move arm upwards to pick up cubby
         case 3:
-          // counterclockwise ==> going up
-          myStepper.step(stepsPerRevolution);
-          Serial.println("STEPPER!");
-          delay(800);
+          // clockwise ==> going up
+          // Set the spinning direction clockwise:
+          digitalWrite(dirPin, HIGH);
+          // Spin the stepper motor 1 revolution quickly:
+          for (int i = 0; i < stepsPerRevolution; i++) {
+            // These four lines result in 1 step:
+            digitalWrite(stepPin, HIGH);
+            delayMicroseconds(700);
+            digitalWrite(stepPin, LOW);
+            delayMicroseconds(700);
+          }
+          delay(1000);
           cs = 4;
         break;
 
