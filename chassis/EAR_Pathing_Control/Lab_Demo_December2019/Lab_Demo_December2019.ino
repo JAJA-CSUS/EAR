@@ -43,12 +43,14 @@ Author: Angelica Smith-Evans
   int ns = 0;
   int cs = 0;
   
+int haveBasket = 0;
+  
   
 void setup() 
 {
   // initialize serial communication:
   Serial.begin(9600);
-  
+  haveBasket = 0;
   //initialize the button pins
   pinMode(button1Pin, INPUT);
   
@@ -167,9 +169,14 @@ void loop() {
         
         //move arm upwards to pick up cubby
         case 3:
-          // clockwise ==> going up
-          // Set the spinning direction clockwise:
-          digitalWrite(dirPin, HIGH);
+          if(haveBasket) {
+             digitalWrite(dirPin, LOW);
+             haveBasket = 0;
+          } else {
+            digitalWrite(dirPin, HIGH);
+            haveBasket = 1;
+          }
+            
           // Spin the stepper motor 1 revolution quickly:
           for (int i = 0; i < stepsPerRevolution; i++) {
             // These four lines result in 1 step:
