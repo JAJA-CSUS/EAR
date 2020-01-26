@@ -30,14 +30,14 @@ master = tk.Tk()
 master.title("Assistant Robot GUI V2")
 master.geometry("600x100")
 
-ONlabel1 = Label(master, text="Cubby Empty (system start)")
-ONlabel1.grid(row=0, column=0)
-ONlabel2 = Label(master, text="Cubby Empty (system start)")
-ONlabel2.grid(row=0, column=1)
-ONlabel3 = Label(master, text="Cubby Empty (system start)")
-ONlabel3.grid(row=0, column=2)
-ONlabel4 = Label(master, text="Cubby Empty (system start)")
-ONlabel4.grid(row=0, column=3)
+ONlabel1 = tk.Label(master, text="Cubby Empty (system start)", font=30)
+ONlabel1.grid(row=0, column=1 ,pady=20)
+ONlabel2 = tk.Label(master, text="Cubby Empty (system start)", font=30)
+ONlabel2.grid(row=1, column=1, pady=20)
+ONlabel3 = tk.Label(master, text="Cubby Empty (system start)", font=30)
+ONlabel3.grid(row=2, column=1, pady=20)
+ONlabel4 = tk.Label(master, text="Cubby Empty (system start)", font=30)
+ONlabel4.grid(row=3, column=1, pady=20)
 
 def cubby1Button():
 	global space1
@@ -182,19 +182,19 @@ def cubby4Button():
 
 def ExitButton():
 	Exitbutton = tk.Button(master, text="Exit", command= EandD, bg='red')
-	Exitbutton.grid(row=1, column=8, ipadx=10, ipady=10)
+	Exitbutton.grid(row=0, column=2, padx=10, ipadx=20, ipady=10)
 def EandD():
 	master.destroy()
 	GPIO.cleanup()
 
-Cubby1StoreButton = Button(master, text="GPIO 21 Cubby 1", command=cubby1Button)
-Cubby1StoreButton.grid(row=1, column=0, ipadx=20, ipady=20)
-Cubby2StoreButton = Button(master, text="GPIO 20 Cubby 2", command=cubby2Button)
-Cubby2StoreButton.grid(row=1, column=1, ipadx=20, ipady=20)
-Cubby3StoreButton = Button(master, text="GPIO 16 Cubby 3", command=cubby3Button)
-Cubby3StoreButton.grid(row=1, column=2, ipadx=20, ipady=20)
-Cubby4StoreButton = Button(master, text="GPIO XX Cubby 3", command=cubby4Button)
-Cubby4StoreButton.grid(row=1, column=3, ipadx=20, ipady=20)
+Cubby1StoreButton = tk.Button(master, text="GPIO 21 Cubby 1", font=("Courier", 30), command=cubby1Button)
+Cubby1StoreButton.grid(row=0, column=0, ipadx=50, ipady=20)
+Cubby2StoreButton = tk.Button(master, text="GPIO 20 Cubby 2", font=("Courier", 30), command=cubby2Button)
+Cubby2StoreButton.grid(row=1, column=0, ipadx=50, ipady=20)
+Cubby3StoreButton = tk.Button(master, text="GPIO 16 Cubby 3", font=("Courier", 30), command=cubby3Button)
+Cubby3StoreButton.grid(row=2, column=0, ipadx=50, ipady=20)
+Cubby4StoreButton = tk.Button(master, text="GPIO 12 Cubby 4", font=("Courier", 30), command=cubby4Button)
+Cubby4StoreButton.grid(row=3, column=0, ipadx=50, ipady=20)
 ExitButton()
 
 master.mainloop()

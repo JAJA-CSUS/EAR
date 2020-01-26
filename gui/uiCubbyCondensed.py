@@ -7,7 +7,7 @@ import time
 import tkinter as tk
 from tkinter.ttk import *
 import RPi.GPIO as GPIO
-
+from functools import partial
 #cubby gpio IDs
 cubby1=21
 cubby2=20
@@ -30,15 +30,14 @@ master = tk.Tk()
 master.title("Assistant Robot GUI V2")
 master.geometry("600x100")
 
-ONlabel1 = Label(master, text="Cubby Empty (system start)")
-ONlabel1.grid(row=0, column=0)
-ONlabel2 = Label(master, text="Cubby Empty (system start)")
-ONlabel2.grid(row=0, column=1)
-ONlabel3 = Label(master, text="Cubby Empty (system start)")
-ONlabel3.grid(row=0, column=2)
-ONlabel4 = Label(master, text="Cubby Empty (system start)")
-ONlabel4.grid(row=0, column=3)
-
+Onlabel1 = Label(master, text="Cubby Empty (system start)")
+Onlabel1.grid(row=0, column=0)
+Onlabel2 = Label(master, text="Cubby Empty (system start)")
+Onlabel2.grid(row=0, column=1)
+Onlabel3 = Label(master, text="Cubby Empty (system start)")
+Onlabel3.grid(row=0, column=2)
+Onlabel4 = Label(master, text="Cubby Empty (system start)")
+Onlabel4.grid(row=0, column=3)
 
 def cubbyButton(space, cubbyID, label):
 	
@@ -84,13 +83,13 @@ def EandD():
 	master.destroy()
 	GPIO.cleanup()
 
-Cubby1StoreButton = Button(master, text="GPIO 21 Cubby 1", command=cubbyButton(space1, cubby1, Onlabel1))
+Cubby1StoreButton = Button(master, text="GPIO 21 Cubby 1", command= partial(cubbyButton, space1, cubby1, Onlabel1))
 Cubby1StoreButton.grid(row=1, column=0, ipadx=20, ipady=20)
-Cubby2StoreButton = Button(master, text="GPIO 20 Cubby 2", command=cubbyButton(space2, cubby2, Onlabel2))
+Cubby2StoreButton = Button(master, text="GPIO 20 Cubby 2", command= partial(cubbyButton, space2, cubby2, Onlabel2))
 Cubby2StoreButton.grid(row=1, column=1, ipadx=20, ipady=20)
-Cubby2StoreButton = Button(master, text="GPIO 20 Cubby 3", command=cubbyButton(space3, cubby3, Onlabel3))
+Cubby3StoreButton = Button(master, text="GPIO 20 Cubby 3", command= partial(cubbyButton, space3, cubby3, Onlabel3))
 Cubby3StoreButton.grid(row=1, column=2, ipadx=20, ipady=20)
-Cubby2StoreButton = Button(master, text="GPIO 20 Cubby 4", command=cubbyButton(space4, cubby4, Onlabel4))
+Cubby4StoreButton = Button(master, text="GPIO 20 Cubby 4", command= partial(cubbyButton, space4, cubby4, Onlabel4))
 Cubby4StoreButton.grid(row=1, column=3, ipadx=20, ipady=20)
 ExitButton()
 
