@@ -47,7 +47,6 @@ Onlabel4 = Label(master, text="Cubby Empty (system start)")
 Onlabel4.grid(row=0, column=3)
 
 def cubbyButton(spaceNum, cubbyID, label):
-	
 	if spaceNum==1:
 		global space1 
 		space = space1
@@ -64,37 +63,40 @@ def cubbyButton(spaceNum, cubbyID, label):
 		global space4
 		space = space4
 		photos[3].config(file = r"/home/pi/Documents/PiFun/UI/EAR/gui/greetimg4.png")
-	
 
 	if(space==False): #if space was empty, set occupied and disable buttons
-		Cubby1StoreButton.config(state='disabled') 
-		Cubby2StoreButton.config(state='disabled') 
-		Cubby3StoreButton.config(state='disabled') 
-		Cubby4StoreButton.config(state='disabled') 
-		master.update()
 		takePic(spaceNum)
 		GPIO.output(cubbyID, GPIO.HIGH) #signal storage op.
 		while not GPIO.input(cubby1Input): 
 			time.sleep(0.01)
+			Cubby1StoreButton.config(state='disabled') 
+			Cubby2StoreButton.config(state='disabled') 
+			Cubby3StoreButton.config(state='disabled') 
+			Cubby4StoreButton.config(state='disabled')
+			master.update()
+		Cubby1StoreButton.config(state='normal')
+		Cubby2StoreButton.config(state='normal')
+		Cubby3StoreButton.config(state='normal')
+		Cubby4StoreButton.config(state='normal') 
+		master.update()
 		label.config(text = "Cubby ocupied") #Display it's full
 	else:                    #if space is occupied
-		Cubby1StoreButton.config(state='disabled') 
-		Cubby2StoreButton.config(state='disabled') 
-		Cubby3StoreButton.config(state='disabled') 
-		Cubby4StoreButton.config(state='disabled') 
-		master.update()
 		removePic(spaceNum)
 		GPIO.output(cubbyID,GPIO.LOW)
 		while not GPIO.input(cubby1Input):
 			time.sleep(0.01)
+			Cubby1StoreButton.config(state='disabled') 
+			Cubby2StoreButton.config(state='disabled') 
+			Cubby3StoreButton.config(state='disabled') 
+			Cubby4StoreButton.config(state='disabled') 
+			master.update()
+		Cubby1StoreButton.config(state='normal')
+		Cubby2StoreButton.config(state='normal')
+		Cubby3StoreButton.config(state='normal')
+		Cubby4StoreButton.config(state='normal') 
+		master.update()
 		label.config(text="Cubby Empty")
 	spaceTF(spaceNum)
-	Cubby1StoreButton.config(state='normal')
-	Cubby2StoreButton.config(state='normal')
-	Cubby3StoreButton.config(state='normal')
-	Cubby4StoreButton.config(state='normal') 
-	master.update()
-	print('enabled')
 
 def ExitButton():       #exit button creation
 	Exitbutton = Button(master, text="Exit", command= EandD, bg='red')
