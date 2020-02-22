@@ -7,7 +7,8 @@ import time
 from tkinter import *
 import RPi.GPIO as GPIO
 from functools import partial
-
+import subprocess
+from PIL import ImageTk, Image
 #cubby gpio IDs
 cubby1=21
 cubby2=20
@@ -30,11 +31,13 @@ GPIO.setup(cubby1Input, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 master = Tk()
 photos = list()
 
-photos.append(PhotoImage(file = r"/home/pi/Documents/PiFun/UI/EAR/gui/greetimg1.png"))
+
 photos.append(PhotoImage(file = r"/home/pi/Documents/PiFun/UI/EAR/gui/greetimg2.png"))
 photos.append(PhotoImage(file = r"/home/pi/Documents/PiFun/UI/EAR/gui/greetimg3.png"))
 photos.append(PhotoImage(file = r"/home/pi/Documents/PiFun/UI/EAR/gui/greetimg4.png"))
-master.title("Assistant Robot GUI V2")
+photos.append(PhotoImage(file = r"/home/pi/Documents/PiFun/UI/EAR/gui/greetimg4.png"))
+
+master.title("Assistant Robot GUI V2") 
 master.geometry("800x100")
 
 Onlabel1 = Label(master, text="Cubby Empty (system start)")
@@ -49,24 +52,20 @@ Onlabel4.grid(row=0, column=3)
 def cubbyButton(spaceNum, cubbyID, label):
 	if spaceNum==1:
 		global space1 
-		space = space1
-		photos[0].config(file = r"/home/pi/Documents/PiFun/UI/EAR/gui/greetimg1.png")
+		space = space1 
 	elif spaceNum==2:
 		global space2
 		space = space2
-		photos[1].config(file = r"/home/pi/Documents/PiFun/UI/EAR/gui/greetimg2.png")
 	elif spaceNum==3:
 		global space3
 		space = space3
-		photos[2].config(file = r"/home/pi/Documents/PiFun/UI/EAR/gui/greetimg3.png")
 	elif spaceNum==4:
 		global space4
 		space = space4
-		photos[3].config(file = r"/home/pi/Documents/PiFun/UI/EAR/gui/greetimg4.png")
 
 	if(space==False): #if space was empty, set occupied and disable buttons
-		takePic(spaceNum)
 		GPIO.output(cubbyID, GPIO.HIGH) #signal storage op.
+		takePic(spaceNum)
 		while not GPIO.input(cubby1Input): 
 			time.sleep(0.01)
 			Cubby1StoreButton.config(state='disabled') 
@@ -74,14 +73,15 @@ def cubbyButton(spaceNum, cubbyID, label):
 			Cubby3StoreButton.config(state='disabled') 
 			Cubby4StoreButton.config(state='disabled')
 			master.update()
+		print('enabled')
 		Cubby1StoreButton.config(state='normal')
 		Cubby2StoreButton.config(state='normal')
 		Cubby3StoreButton.config(state='normal')
 		Cubby4StoreButton.config(state='normal') 
 		master.update()
 		label.config(text = "Cubby ocupied") #Display it's full
-	else:                    #if space is occupied
-		removePic(spaceNum)
+	elif(space==True):                    #if space is occupied
+		#to be added: remove picture from file.
 		GPIO.output(cubbyID,GPIO.LOW)
 		while not GPIO.input(cubby1Input):
 			time.sleep(0.01)
@@ -90,6 +90,7 @@ def cubbyButton(spaceNum, cubbyID, label):
 			Cubby3StoreButton.config(state='disabled') 
 			Cubby4StoreButton.config(state='disabled') 
 			master.update()
+		removePic(spaceNum)
 		Cubby1StoreButton.config(state='normal')
 		Cubby2StoreButton.config(state='normal')
 		Cubby3StoreButton.config(state='normal')
@@ -122,12 +123,20 @@ def spaceTF(spaceNum):  #set if cubby is occupied or empty (T or F)
 
 def takePic(spaceNum):
 	if spaceNum==1:
+		subprocess.call("./webcam.sh", shell=True)
+		photos[0] = ImageTk.PhotoImage(Image.open("greetimg1.jpg"))  
 		Cubby1StoreButton.config(image = photos[0])
 	elif spaceNum==2:
+		subprocess.call("./webcam2.sh", shell=True)
+		photos[1] = ImageTk.PhotoImage(Image.open("greetimg2.jpg")) 
 		Cubby2StoreButton.config(image = photos[1])
 	elif spaceNum==3:
+		subprocess.call("./webcam3.sh", shell=True)
+		photos[2] = ImageTk.PhotoImage(Image.open("greetimg3.jpg")) 
 		Cubby3StoreButton.config(image = photos[2])
 	elif spaceNum==4:
+		subprocess.call("./webcam4.sh", shell=True)
+		photos[3] = ImageTk.PhotoImage(Image.open("greetimg4.jpg")) 
 		Cubby4StoreButton.config(image = photos[3])
 
 def removePic(spaceNum):
