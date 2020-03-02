@@ -9,6 +9,8 @@ import RPi.GPIO as GPIO
 from functools import partial
 import subprocess
 from PIL import ImageTk, Image
+import pygame
+
 #cubby gpio IDs
 cubby1=21
 cubby2=20
@@ -31,6 +33,7 @@ GPIO.setup(cubby1Input, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 master = Tk()
 photos = list()
 
+pygame.mixer.init()
 
 photos.append(PhotoImage(file = r"/home/pi/Documents/PiFun/UI/EAR/gui/greetimg2.png"))
 photos.append(PhotoImage(file = r"/home/pi/Documents/PiFun/UI/EAR/gui/greetimg3.png"))
@@ -50,12 +53,21 @@ Onlabel4 = Label(master, text="Cubby Empty (system start)")
 Onlabel4.grid(row=0, column=3)
 
 def cubbyButton(spaceNum, cubbyID, label):
+
 	if spaceNum==1:
 		global space1 
 		space = space1 
+		pygame.mixer.music.load("output.wav")
+		pygame.mixer.music.play()
+		while pygame.mixer.music.get_busy() == True:
+			continue
 	elif spaceNum==2:
 		global space2
 		space = space2
+		pygame.mixer.music.load("secondCubby.mp3")
+		pygame.mixer.music.play()
+		while pygame.mixer.music.get_busy() == True:
+			continue
 	elif spaceNum==3:
 		global space3
 		space = space3
