@@ -22,6 +22,7 @@ space1=False #space 1 is initially empty etc
 space2=False
 space3=False
 space4=False
+hWOpen=False
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(cubby1, GPIO.OUT,initial=GPIO.LOW)
@@ -32,7 +33,6 @@ GPIO.setup(cubby1Input, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 master = Tk()
 photos = list()
-
 pygame.mixer.init()
 
 photos.append(PhotoImage(file = r"/home/pi/Documents/PiFun/UI/EAR/gui/greetimg3.png"))
@@ -41,7 +41,7 @@ photos.append(PhotoImage(file = r"/home/pi/Documents/PiFun/UI/EAR/gui/greetimg3.
 photos.append(PhotoImage(file = r"/home/pi/Documents/PiFun/UI/EAR/gui/greetimg3.png"))
 
 master.title("Assistant Robot GUI V2") 
-master.geometry("800x100")
+master.geometry("1650x400")
 
 Onlabel1 = Label(master, text="Cubby Empty (system start)")
 Onlabel1.grid(row=0, column=0)
@@ -57,23 +57,55 @@ def cubbyButton(spaceNum, cubbyID, label):
 	if spaceNum==1:
 		global space1 
 		space = space1 
-		pygame.mixer.music.load("output.wav")
-		pygame.mixer.music.play()
-		while pygame.mixer.music.get_busy() == True:
-			continue
+		if space==False:
+			pygame.mixer.music.load("storingInOne.mp3")
+			pygame.mixer.music.play()
+			while pygame.mixer.music.get_busy() == True:
+				continue
+		else:
+			pygame.mixer.music.load("1CubbyRetrieve.mp3")
+			pygame.mixer.music.play()
+			while pygame.mixer.music.get_busy() == True:
+				continue
 	elif spaceNum==2:
 		global space2
 		space = space2
-		pygame.mixer.music.load("secondCubby.mp3")
-		pygame.mixer.music.play()
-		while pygame.mixer.music.get_busy() == True:
-			continue
+		if space==False:
+			pygame.mixer.music.load("2Store.mp3")
+			pygame.mixer.music.play()
+			while pygame.mixer.music.get_busy() == True:
+				continue
+		else:
+			pygame.mixer.music.load("2CubbyRetrieve.mp3")
+			pygame.mixer.music.play()
+			while pygame.mixer.music.get_busy() == True:
+				continue
 	elif spaceNum==3:
 		global space3
 		space = space3
+		if space==False:
+			pygame.mixer.music.load("3rdCubbyStore.mp3")
+			pygame.mixer.music.play()
+			while pygame.mixer.music.get_busy() == True:
+				continue
+		else:
+			pygame.mixer.music.load("3CubbyRetrieve.mp3")
+			pygame.mixer.music.play()
+			while pygame.mixer.music.get_busy() == True:
+				continue
 	elif spaceNum==4:
 		global space4
 		space = space4
+		if space==False:
+			pygame.mixer.music.load("4thcubbystore.mp3")
+			pygame.mixer.music.play()
+			while pygame.mixer.music.get_busy() == True:
+				continue
+		else:
+			pygame.mixer.music.load("4CubbyRetrieve.mp3")
+			pygame.mixer.music.play()
+			while pygame.mixer.music.get_busy() == True:
+				continue
 
 	if(space==False): #if space was empty, set occupied and disable buttons
 		GPIO.output(cubbyID, GPIO.HIGH) #signal storage op.
@@ -85,7 +117,6 @@ def cubbyButton(spaceNum, cubbyID, label):
 			Cubby3StoreButton.config(state='disabled') 
 			Cubby4StoreButton.config(state='disabled')
 			master.update()
-		print('enabled')
 		Cubby1StoreButton.config(state='normal')
 		Cubby2StoreButton.config(state='normal')
 		Cubby3StoreButton.config(state='normal')
@@ -93,7 +124,6 @@ def cubbyButton(spaceNum, cubbyID, label):
 		master.update()
 		label.config(text = "Cubby ocupied") #Display it's full
 	elif(space==True):                    #if space is occupied
-		#to be added: remove picture from file.
 		GPIO.output(cubbyID,GPIO.LOW)
 		while not GPIO.input(cubby1Input):
 			time.sleep(0.01)
@@ -161,15 +191,30 @@ def removePic(spaceNum):
 	elif spaceNum==4:
 		Cubby4StoreButton.config(image = '')
 
+def create_window():
+	global hWOpen
+	if hWOpen==False:
+		global helpWindow
+		helpWindow = Toplevel(master)
+		helpWindow.title("Help Page") 
+		helpWindow.geometry("400x400")
+		hWOpen=True
+		print(hWOpen)
+	else:
+		helpWindow.destroy()
+		hWOpen=False
+		print(hWOpen)
 
 Cubby1StoreButton = Button(master, text="GPIO 21 Cubby 1", command= partial(cubbyButton, 1, cubby1, Onlabel1))
 Cubby1StoreButton.grid(row=1, column=0, ipadx=20, ipady=20)
 Cubby2StoreButton = Button(master, text="GPIO 20 Cubby 2", command= partial(cubbyButton, 2, cubby2, Onlabel2))
 Cubby2StoreButton.grid(row=1, column=1, ipadx=20, ipady=20)
-Cubby3StoreButton = Button(master, text="GPIO 20 Cubby 3", command= partial(cubbyButton, 3, cubby3, Onlabel3))
+Cubby3StoreButton = Button(master, text="GPIO 16 Cubby 3", command= partial(cubbyButton, 3, cubby3, Onlabel3))
 Cubby3StoreButton.grid(row=1, column=2, ipadx=20, ipady=20)
-Cubby4StoreButton = Button(master, text="GPIO 20 Cubby 4", command= partial(cubbyButton, 4, cubby4, Onlabel4))
+Cubby4StoreButton = Button(master, text="GPIO 12 Cubby 4", command= partial(cubbyButton, 4, cubby4, Onlabel4))
 Cubby4StoreButton.grid(row=1, column=3, ipadx=20, ipady=20)
+helpButton = Button(master, text="Help Page", bg= 'blue', command=create_window)
+helpButton.grid(row=2, column=8, ipadx=10, ipady=10)
 ExitButton()
 
 master.mainloop()
