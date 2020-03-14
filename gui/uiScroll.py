@@ -1,3 +1,4 @@
+#!python3
 #Programmer: Alexander Leones
 #Project: Elderly Assistance Robot
 #  uiCubbyCondensed.py 
@@ -8,6 +9,7 @@ from tkinter import *
 import RPi.GPIO as GPIO
 from functools import partial
 import subprocess
+
 from PIL import ImageTk, Image
 import pygame
 
@@ -49,10 +51,10 @@ scrollable_frame.bind(
 photos = list()
 pygame.mixer.init()
 
-photos.append(PhotoImage(file = r"/home/pi/Documents/PiFun/UI/EAR/gui/greetimg3.png"))
-photos.append(PhotoImage(file = r"/home/pi/Documents/PiFun/UI/EAR/gui/greetimg3.png"))
-photos.append(PhotoImage(file = r"/home/pi/Documents/PiFun/UI/EAR/gui/greetimg3.png"))
-photos.append(PhotoImage(file = r"/home/pi/Documents/PiFun/UI/EAR/gui/greetimg3.png"))
+photos.append(PhotoImage(file = r"./greetimg3.png"))
+photos.append(PhotoImage(file = r"./greetimg3.png"))
+photos.append(PhotoImage(file = r"./greetimg3.png"))
+photos.append(PhotoImage(file = r"./greetimg3.png"))
 
 master.title("Assistant Robot GUI V2") 
 master.geometry("1650x400")
