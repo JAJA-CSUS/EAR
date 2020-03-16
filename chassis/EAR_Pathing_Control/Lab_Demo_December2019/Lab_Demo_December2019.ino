@@ -179,7 +179,7 @@ void loop() {
               }
         break;
         
-//state 3: move arm upwards to pick up cubby
+//state 3: move arm upwards/downwards to pick up/put down cubby
         case 3:
           if(haveBasket) {
              digitalWrite(dirPin, LOW);
