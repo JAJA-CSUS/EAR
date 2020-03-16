@@ -1,6 +1,9 @@
 /*
 Author: Angelica Smith-Evans
         Jeremy Shaw
+		
+The purpose of this code is to path a robot towards a cubby, to pick up a cubby from a shelf
+and bring it back to a point.
 
 */
 
@@ -13,7 +16,7 @@ Author: Angelica Smith-Evans
   int turn_delay = 10;
   
 //Motor Control Connections
-// Left Wheel Motor
+//Left Wheel Motor
   int left_wheel_enable = 10;        //enB pin connected to UNO pin 10 to enable LW Motor Driver
   int in1 = 9;                       //in1 pin connected to UNO pin 9 to control LW Motor
   int in2 = 8;                       //in2 pin connected to UNO pin 8 to control LW Motor
@@ -44,13 +47,17 @@ Author: Angelica Smith-Evans
   int cs = 0;
   
 int haveBasket = 0;
-  
+
+//////////////////////////////////////////////////////////////////////////////////////
+//                                Board Set-up Section                              //
+//////////////////////////////////////////////////////////////////////////////////////
   
 void setup() 
 {
   // initialize serial communication:
   Serial.begin(9600);
   haveBasket = 0;
+  
   //initialize the button pins
   pinMode(button1Pin, INPUT);
   
@@ -66,6 +73,10 @@ void setup()
   delay(3000);
 }
 
+//////////////////////////////////////////////////////////////////////////////////////
+//                                Main Code Section                                 //
+//////////////////////////////////////////////////////////////////////////////////////
+
 void loop() {
   while(1)
   {
@@ -76,7 +87,8 @@ void loop() {
     Serial.println(cs);
     front_left_IR_state = analogRead(front_left_IR);    //read value from FL sensor and store value in front_left_IR_state 
     front_right_IR_state = analogRead(front_right_IR);  //read value from FR sensor and store value in front_right_IR_state
-      //switch to state 1 if button1 is pressed
+    
+//state 0: wait for button press
       switch (cs) {
         case 0:
             digitalWrite(LED, HIGH);
@@ -90,7 +102,7 @@ void loop() {
             } 
         break;
 
-        //nudge forward
+//state 1: nudge chassis forward
         case 1:
             analogWrite(left_wheel_enable, 180);
             analogWrite(right_wheel_enable, 180);
@@ -103,7 +115,7 @@ void loop() {
             cs = 2;
         break;
 
-        //path towards shelves along black line
+//state 2: path chassis towards shelves along black line
         case 2:
               if(front_right_IR_state > 500 && front_left_IR_state < 500)
               {
@@ -167,7 +179,7 @@ void loop() {
               }
         break;
         
-        //move arm upwards to pick up cubby
+//state 3: move arm upwards to pick up cubby
         case 3:
           if(haveBasket) {
              digitalWrite(dirPin, LOW);
@@ -189,7 +201,7 @@ void loop() {
           cs = 4;
         break;
 
-        //nudge backwards
+//state 4: nudge backwards
         case 4:
             analogWrite(left_wheel_enable, 180);
             analogWrite(right_wheel_enable, 180);
@@ -201,11 +213,9 @@ void loop() {
             delay(500);
             cs = 5;
         break;
-
-        case 5:
-          // go back to start.
-
-          
+		
+//state 5: move chassis back towards start
+        case 5:   
           //right side IR sensor detects black line, left side does not
           if(front_right_IR_state > 500 && front_left_IR_state < 500) {
             Serial.println("right side IR off");
@@ -267,6 +277,5 @@ void loop() {
           break;
       }
   }
-  //ns = cs;
   delay(50); // may have to switch this back to 200?
 }
