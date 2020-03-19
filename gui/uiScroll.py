@@ -1,9 +1,9 @@
 #!python3
 #Programmer: Alexander Leones
 #Project: Elderly Assistance Robot
-#  uiCubbyCondensed.py 
-# first semester lab prototype ui
-# Nov 3, 2019
+#  uiCubbyScroll.py 
+# second semester deployable prototype gui
+# 3/19/20
 import time
 from tkinter import *
 import RPi.GPIO as GPIO
