@@ -52,10 +52,10 @@ scrollable_frame.bind(
 photos = list()
 pygame.mixer.init()
 
-photos.append(PhotoImage(file = r"../greetimg3.png"))
-photos.append(PhotoImage(file = r"../greetimg3.png"))
-photos.append(PhotoImage(file = r"../greetimg3.png"))
-photos.append(PhotoImage(file = r"../greetimg3.png"))
+photos.append(PhotoImage(file = r"../images/greetimg3.png"))
+photos.append(PhotoImage(file = r"../images/greetimg3.png"))
+photos.append(PhotoImage(file = r"../images/greetimg3.png"))
+photos.append(PhotoImage(file = r"../images/greetimg3.png"))
 
 master.title("Assistant Robot GUI V2") 
 master.geometry("1650x400")
@@ -75,13 +75,13 @@ def cubbyButton(spaceNum, cubbyID, label):
 		global space1 
 		space = space1 
 		if space==False:
-			pygame.mixer.music.load("../storingInOne.mp3")
+			pygame.mixer.music.load("../sounds/storingInOne.mp3")
 			pygame.mixer.music.play()
 			while pygame.mixer.music.get_busy() == True:
 				continue
 			signalOut=1
 		else:
-			pygame.mixer.music.load("../1CubbyRetrieve.mp3")
+			pygame.mixer.music.load("../sounds/1CubbyRetrieve.mp3")
 			pygame.mixer.music.play()
 			while pygame.mixer.music.get_busy() == True:
 				continue
@@ -89,13 +89,13 @@ def cubbyButton(spaceNum, cubbyID, label):
 		global space2
 		space = space2
 		if space==False:
-			pygame.mixer.music.load("2Store.mp3")
+			pygame.mixer.music.load("../sounds/2Store.mp3")
 			pygame.mixer.music.play()
 			while pygame.mixer.music.get_busy() == True:
 				continue
 			signalOut=2
 		else:
-			pygame.mixer.music.load("2CubbyRetrieve.mp3")
+			pygame.mixer.music.load("../sounds/2CubbyRetrieve.mp3")
 			pygame.mixer.music.play()
 			while pygame.mixer.music.get_busy() == True:
 				continue
@@ -103,13 +103,13 @@ def cubbyButton(spaceNum, cubbyID, label):
 		global space3
 		space = space3
 		if space==False:
-			pygame.mixer.music.load("3rdCubbyStore.mp3")
+			pygame.mixer.music.load("../sounds/3rdCubbyStore.mp3")
 			pygame.mixer.music.play()
 			while pygame.mixer.music.get_busy() == True:
 				continue
 			signalOut=3
 		else:
-			pygame.mixer.music.load("3CubbyRetrieve.mp3")
+			pygame.mixer.music.load("../sounds/3CubbyRetrieve.mp3")
 			pygame.mixer.music.play()
 			while pygame.mixer.music.get_busy() == True:
 				continue
@@ -117,13 +117,13 @@ def cubbyButton(spaceNum, cubbyID, label):
 		global space4
 		space = space4
 		if space==False:
-			pygame.mixer.music.load("4thcubbystore.mp3")
+			pygame.mixer.music.load("../sounds/4thcubbystore.mp3")
 			pygame.mixer.music.play()
 			while pygame.mixer.music.get_busy() == True:
 				continue
 			signalOut=4
 		else:
-			pygame.mixer.music.load("4CubbyRetrieve.mp3")
+			pygame.mixer.music.load("../sounds/4CubbyRetrieve.mp3")
 			pygame.mixer.music.play()
 			while pygame.mixer.music.get_busy() == True:
 				continue
@@ -192,20 +192,20 @@ def spaceTF(spaceNum):  #set if cubby is occupied or empty (T or F)
 
 def takePic(spaceNum):
 	if spaceNum==1:
-		subprocess.call("../webcam.sh", shell=True)
-		photos[0] = ImageTk.PhotoImage(Image.open("../greetimg1.jpg"))  
+		subprocess.call("../scripts/webcam.sh", shell=True)
+		photos[0] = ImageTk.PhotoImage(Image.open("../images/greetimg1.jpg"))  
 		Cubby1StoreButton.config(image = photos[0])
 	elif spaceNum==2:
-		subprocess.call("./webcam2.sh", shell=True)
-		photos[1] = ImageTk.PhotoImage(Image.open("greetimg2.jpg")) 
+		subprocess.call("../scripts/webcam2.sh", shell=True)
+		photos[1] = ImageTk.PhotoImage(Image.open("../images/greetimg2.jpg")) 
 		Cubby2StoreButton.config(image = photos[1])
 	elif spaceNum==3:
-		subprocess.call("./webcam3.sh", shell=True)
-		photos[2] = ImageTk.PhotoImage(Image.open("greetimg3.jpg")) 
+		subprocess.call("../scripts/webcam3.sh", shell=True)
+		photos[2] = ImageTk.PhotoImage(Image.open("../images/greetimg3.jpg")) 
 		Cubby3StoreButton.config(image = photos[2])
 	elif spaceNum==4:
-		subprocess.call("./webcam4.sh", shell=True)
-		photos[3] = ImageTk.PhotoImage(Image.open("greetimg4.jpg")) 
+		subprocess.call("../scripts/webcam4.sh", shell=True)
+		photos[3] = ImageTk.PhotoImage(Image.open("../images/greetimg4.jpg")) 
 		Cubby4StoreButton.config(image = photos[3])
 
 def removePic(spaceNum):
