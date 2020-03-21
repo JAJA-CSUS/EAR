@@ -37,7 +37,7 @@ GPIO.setup(cubby1Input, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 master = Tk()
 
 container = Frame(master)
-canvas = Canvas(container)
+canvas = Canvas(container, height=319, width= 780)
 scrollbar = Scrollbar(container, orient="horizontal", command=canvas.xview, width = 64)
 scrollable_frame = Frame(canvas)
 scrollable_frame.bind(
@@ -60,14 +60,14 @@ photos.append(PhotoImage(file = r"../images/greetimg3.png"))
 master.title("Assistant Robot GUI V2") 
 master.geometry("1650x400")
 
-Onlabel1 = Label(master, text="Cubby Empty (system start)")
-#Onlabel1.grid(row=0, column=0)
-Onlabel2 = Label(master, text="Cubby Empty (system start)")
-#Onlabel2.grid(row=0, column=1)
-Onlabel3 = Label(master, text="Cubby Empty (system start)")
-#Onlabel3.grid(row=0, column=2)
-Onlabel4 = Label(master, text="Cubby Empty (system start)")
-#Onlabel4.grid(row=0, column=3)
+Onlabel1 = Label(scrollable_frame, text="Cubby Empty (system start)")
+Onlabel1.grid(row=0, column=0)
+Onlabel2 = Label(scrollable_frame, text="Cubby Empty (system start)")
+Onlabel2.grid(row=0, column=1)
+Onlabel3 = Label(scrollable_frame, text="Cubby Empty (system start)")
+Onlabel3.grid(row=0, column=2)
+Onlabel4 = Label(scrollable_frame, text="Cubby Empty (system start)")
+Onlabel4.grid(row=0, column=3)
 
 def cubbyButton(spaceNum, cubbyID, label):
 
@@ -170,7 +170,7 @@ def cubbyButton(spaceNum, cubbyID, label):
 
 def ExitButton():       #exit button creation
 	Exitbutton = Button(scrollable_frame, text="Exit", command= EandD, bg='red')
-	Exitbutton.pack(side=LEFT)
+	Exitbutton.grid(row=2, column = 5, sticky=W+E+N+S)
 
 def EandD():            #clean up led during exit
 	master.destroy()
@@ -235,19 +235,19 @@ def create_window():
 
 
 Cubby1StoreButton = Button(scrollable_frame, text="GPIO 21 Cubby 1", command= partial(cubbyButton, 1, cubby1, Onlabel1))
-Cubby1StoreButton.pack(side=LEFT)
+Cubby1StoreButton.grid(row=2, column = 0, sticky=W+E+N+S )
 Cubby2StoreButton = Button(scrollable_frame, text="GPIO 20 Cubby 2", command= partial(cubbyButton, 2, cubby2, Onlabel2))
-Cubby2StoreButton.pack(side=LEFT)
+Cubby2StoreButton.grid(row=2, column = 1, sticky=W+E+N+S)
 Cubby3StoreButton = Button(scrollable_frame, text="GPIO 16 Cubby 3", command= partial(cubbyButton, 3, cubby3, Onlabel3))
-Cubby3StoreButton.pack(side=LEFT)
+Cubby3StoreButton.grid(row=2, column = 2, sticky=W+E+N+S)
 Cubby4StoreButton = Button(scrollable_frame, text="GPIO 12 Cubby 4", command= partial(cubbyButton, 4, cubby4, Onlabel4))
-Cubby4StoreButton.pack(side=LEFT)
+Cubby4StoreButton.grid(row=2, column = 3, sticky=W+E+N+S)
 helpButton = Button(scrollable_frame, text="Help Page", bg= 'blue', command=create_window)
-helpButton.pack(side=LEFT)
+helpButton.grid(row=2, column = 4, sticky=W+E+N+S)
 ExitButton()
-scrollbar.pack(side="bottom", fill="x")
+scrollbar.grid(row=3, sticky= E+W)
 canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
 canvas.configure(xscrollcommand=scrollbar.set)
 container.pack(expand=True, fill="both")
-canvas.pack(side="left", fill="both", expand=True)
+canvas.grid(row=0, sticky = W+E+N+S )
 master.mainloop()
