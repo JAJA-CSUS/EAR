@@ -14,41 +14,42 @@ and bring it back to a point.
 //                        Variable Declaration Section                              //
 //////////////////////////////////////////////////////////////////////////////////////
 //Speed Control
-  int vSpeed = 190;                  // MAX 255
-  int turn_speed = 100;              // MAX 255 
-  int turn_delay = 10;
+int vSpeed = 190;                  // MAX 255
+int turn_speed = 100;              // MAX 255 
+int turn_delay = 10;
   
-//Motor Control Connections
-//Left Wheel Motor
-  int left_wheel_enable = A13;        //enB pin connected to UNO pin 10 to enable LW Motor Driver
-  int in1 = A12;                       //in1 pin connected to UNO pin 9 to control LW Motor
-  int in2 = A32;                       //in2 pin connected to UNO pin 8 to control LW Motor
-// Right Wheel Motor
-  int right_wheel_enable = 23;        //enA pin connected to UNO pin 5 to enable RW Motor Driver
-  int in3 = 28;                       //in3 pin connected to UNO pin 7 to control RW Motor
-  int in4 = 27;                       //in4 pin connected to UNO pin 6 to control RW Motor
+//Motor Driver
+//Left Wheel
+#define left_wheel_enable A13        //enB pin connected to UNO pin 10 to enable LW Motor Driver
+#define in1 A12                       //in1 pin connected to UNO pin 9 to control LW Motor
+#define in2 A32                       //in2 pin connected to UNO pin 8 to control LW Motor
+// Right Wheel
+#define right_wheel_enable 23        //enA pin connected to UNO pin 5 to enable RW Motor Driver
+#define in3 28                       //in3 pin connected to UNO pin 7 to control RW Motor
+#define in4 27                       //in4 pin connected to UNO pin 6 to control RW Motor
 
-// Stepper defines
+// Stepper Driver
 #define dirPin A35
 #define stepPin 4
 #define stepsPerRevolution 200
 
-//Proximity Sensor Connections
-  const int front_left_IR = A29;             // connect the front left IR sensor to pin A0
-  const int front_right_IR = A11;            // connect the front right IR sensor to pin A1
-  int front_left_IR_state = 0;              // variable to store the values from front left sensor
-  int front_right_IR_state = 0;             // variable to store the values from front right sensor
+//Proximity Sensor
+#define front_left_IR A29             // connect the front left IR sensor to pin A0
+#define front_right_IR A11            // connect the front right IR sensor to pin A1
+int front_left_IR_state = 0;              // variable to store the values from front left sensor
+int front_right_IR_state = 0;             // variable to store the values from front right sensor
   
 //LED
-  const int LED = 5;                        // ATP LED 5; Arduino Uno Mega 13
+#define LED 5                        // ATP LED pin 5; Arduino Uno Mega pin 13
+
 //Buttons
-  const int button1Pin = A34;                // button1Pin connected to UNO pin A2
-  int button1State = 0;                     // variable for reading the pushbutton status, initially low
+#define button1Pin A34                // button1Pin connected to UNO pin A2
+int button1State = 0;                     // variable for reading the pushbutton status, initially low
 
 //Switch Case Variables
-  int ns = 0;
-  int cs = 0;
-  
+int ns = 0;
+int cs = 0;
+
 int haveBasket = 0;
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -69,10 +70,10 @@ void setup()
   pinMode(in2, OUTPUT);
   pinMode(in3, OUTPUT);
   pinMode(in4, OUTPUT);
-
+  
   pinMode(stepPin, OUTPUT);
   pinMode(dirPin, OUTPUT);
-
+  
   delay(3000);
 }
 
@@ -91,8 +92,9 @@ void loop() {
     front_left_IR_state = analogRead(front_left_IR);    //read value from FL sensor and store value in front_left_IR_state 
     front_right_IR_state = analogRead(front_right_IR);  //read value from FR sensor and store value in front_right_IR_state
     
-//state 0: wait for button press
+
       switch (cs) {
+//state 0: wait for button press
         case 0:
             digitalWrite(LED, HIGH);
             
