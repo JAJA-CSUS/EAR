@@ -131,16 +131,17 @@ def cubbyButton(spaceNum, cubbyID, label):
 	if(space==False): #if space was empty, set occupied and disable buttons
 		#GPIO.output(cubbyID, GPIO.HIGH) #signal storage op.
 		takePic(spaceNum)
-		i2.signalToUno(signalOut)
+		#i2.signalToUno(signalOut)
 		signalIn=0 #initialize signal from uno variable
 		while signalIn == 0: #while no signal from uno
-			signalIn= i2.signalFromUno() #get signal from uno. no idea if this works
+			#signalIn= i2.signalFromUno() #get signal from uno. no idea if this works
 			time.sleep(0.01)
 			Cubby1StoreButton.config(state='disabled') 
 			Cubby2StoreButton.config(state='disabled') 
 			Cubby3StoreButton.config(state='disabled') 
 			Cubby4StoreButton.config(state='disabled')
 			master.update()
+			break #TODO: remove when i2c works
 		Cubby1StoreButton.config(state='normal')
 		Cubby2StoreButton.config(state='normal')
 		Cubby3StoreButton.config(state='normal')
@@ -149,16 +150,17 @@ def cubbyButton(spaceNum, cubbyID, label):
 		label.config(text = "Cubby ocupied") #Display it's full
 	elif(space==True):                    #if space is occupied
 		#GPIO.output(cubbyID,GPIO.LOW)
-		i2.signalToUno(signalOut)
+		#i2.signalToUno(signalOut)
 		signalIn=0 #initialize signal from uno variable
-		while singalIn==0: #while no signal from uno
-			signalIn= i2.signalFromUno() #get signal from uno. no idea if this works
+		while signalIn==0: #while no signal from uno
+		#	signalIn= i2.signalFromUno() #get signal from uno. no idea if this works
 			time.sleep(0.01)
 			Cubby1StoreButton.config(state='disabled') 
 			Cubby2StoreButton.config(state='disabled') 
 			Cubby3StoreButton.config(state='disabled') 
 			Cubby4StoreButton.config(state='disabled') 
 			master.update()
+			break
 		removePic(spaceNum)
 		Cubby1StoreButton.config(state='normal')
 		Cubby2StoreButton.config(state='normal')
@@ -192,19 +194,19 @@ def spaceTF(spaceNum):  #set if cubby is occupied or empty (T or F)
 
 def takePic(spaceNum):
 	if spaceNum==1:
-		subprocess.call("../scripts/webcam.sh", shell=True)
+		subprocess.call("fswebcam --no-banner /home/pi/Documents/EAR/gui/images/greetimg1.jpg", shell=True)
 		photos[0] = ImageTk.PhotoImage(Image.open("../images/greetimg1.jpg"))  
 		Cubby1StoreButton.config(image = photos[0])
 	elif spaceNum==2:
-		subprocess.call("../scripts/webcam2.sh", shell=True)
+		subprocess.call("fswebcam --no-banner /home/pi/Documents/EAR/gui/images/greetimg2.jpg", shell=True)
 		photos[1] = ImageTk.PhotoImage(Image.open("../images/greetimg2.jpg")) 
 		Cubby2StoreButton.config(image = photos[1])
 	elif spaceNum==3:
-		subprocess.call("../scripts/webcam3.sh", shell=True)
+		subprocess.call("fswebcam --no-banner /home/pi/Documents/EAR/gui/images/greetimg3.jpg", shell=True)
 		photos[2] = ImageTk.PhotoImage(Image.open("../images/greetimg3.jpg")) 
 		Cubby3StoreButton.config(image = photos[2])
 	elif spaceNum==4:
-		subprocess.call("../scripts/webcam4.sh", shell=True)
+		subprocess.call("fswebcam --no-banner /home/pi/Documents/EAR/gui/images/greetimg4.jpg", shell=True)
 		photos[3] = ImageTk.PhotoImage(Image.open("../images/greetimg4.jpg")) 
 		Cubby4StoreButton.config(image = photos[3])
 
