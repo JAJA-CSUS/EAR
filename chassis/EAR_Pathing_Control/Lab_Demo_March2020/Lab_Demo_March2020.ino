@@ -11,7 +11,7 @@ and bring it back to a point.
 // The pins are changed to match the Artemis ATP, instead of the Arduino Uno MEGA
 
 //////////////////////////////////////////////////////////////////////////////////////
-//                        Variable Declaration Section                              //
+//                        Declaration Section                              //
 //////////////////////////////////////////////////////////////////////////////////////
 //Speed Control
 int vSpeed = 190;                  // MAX 255
@@ -50,7 +50,17 @@ int button1State = 0;                     // variable for reading the pushbutton
 int ns = 0;
 int cs = 0;
 
+// Basket state
 int haveBasket = 0;
+
+// Which cubby
+int cubby = 1;  // default assumes 1. Range 1-4
+
+// i2c setup, may not be necessary
+#include <Wire.h>
+#define sAddr 11  // PyPi took 8, iirc. I'll take 11 (check for hex vs decimal)
+int i2cSwitch = 0;
+
 
 //////////////////////////////////////////////////////////////////////////////////////
 //                                Board Set-up Section                              //
@@ -73,13 +83,35 @@ void setup()
   
   pinMode(stepPin, OUTPUT);
   pinMode(dirPin, OUTPUT);
-  
+
+  // i2c
+  Wire.begin(sAddr);
+  Wire.onReceive(receiveData);
+  Wire.onRequest(sendData);
+
+
+  //Something else
   delay(3000);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
 //                                Main Code Section                                 //
 //////////////////////////////////////////////////////////////////////////////////////
+
+void receiveData(int ByteCount){
+  while(Wire.available()){
+    i2cSwitch = Wire.read();
+    Serial.print("data received: ");
+    Serial.println(i2cSwitch);
+  }
+}
+
+void sendData(){
+
+  if(i2cSwitch==1){
+    Wire.write("test 1");
+  }
+}
 
 void loop() {
   while(1)
