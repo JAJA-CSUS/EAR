@@ -129,19 +129,17 @@ def cubbyButton(spaceNum, cubbyID, label):
 				continue
 
 	if(space==False): #if space was empty, set occupied and disable buttons
-		#GPIO.output(cubbyID, GPIO.HIGH) #signal storage op.
 		takePic(spaceNum)
-		#i2.signalToUno(signalOut)
+		i2.signalToUno(signalOut)
 		signalIn=0 #initialize signal from uno variable
 		while signalIn == 0: #while no signal from uno
-			#signalIn= i2.signalFromUno() #get signal from uno. no idea if this works
+			signalIn= i2.signalFromUno() #get signal from uno. no idea if this works
 			time.sleep(0.01)
 			Cubby1StoreButton.config(state='disabled') 
 			Cubby2StoreButton.config(state='disabled') 
 			Cubby3StoreButton.config(state='disabled') 
 			Cubby4StoreButton.config(state='disabled')
 			master.update()
-			break #TODO: remove when i2c works
 		Cubby1StoreButton.config(state='normal')
 		Cubby2StoreButton.config(state='normal')
 		Cubby3StoreButton.config(state='normal')
@@ -149,18 +147,16 @@ def cubbyButton(spaceNum, cubbyID, label):
 		master.update()
 		label.config(text = "Cubby ocupied") #Display it's full
 	elif(space==True):                    #if space is occupied
-		#GPIO.output(cubbyID,GPIO.LOW)
-		#i2.signalToUno(signalOut)
+		i2.signalToUno(signalOut)
 		signalIn=0 #initialize signal from uno variable
 		while signalIn==0: #while no signal from uno
-		#	signalIn= i2.signalFromUno() #get signal from uno. no idea if this works
+			signalIn= i2.signalFromUno() #get signal from uno. no idea if this works
 			time.sleep(0.01)
 			Cubby1StoreButton.config(state='disabled') 
 			Cubby2StoreButton.config(state='disabled') 
 			Cubby3StoreButton.config(state='disabled') 
 			Cubby4StoreButton.config(state='disabled') 
 			master.update()
-			break
 		removePic(spaceNum)
 		Cubby1StoreButton.config(state='normal')
 		Cubby2StoreButton.config(state='normal')

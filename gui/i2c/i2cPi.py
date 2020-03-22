@@ -9,5 +9,6 @@ def signalToUno(sig):
 
 
 def signalFromUno():
+	bus.write_byte(addr, 0) #Polling dev #8 for data.
 	sig = bus.read_byte(addr)
 	return sig
