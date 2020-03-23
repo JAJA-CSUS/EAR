@@ -5,6 +5,7 @@
 # second semester deployable prototype gui
 # 3/19/20
 import i2cPi as i2
+import serial
 import time
 from tkinter import *
 import RPi.GPIO as GPIO
@@ -33,6 +34,11 @@ GPIO.setup(cubby2, GPIO.OUT,initial=GPIO.LOW)
 GPIO.setup(cubby3, GPIO.OUT,initial=GPIO.LOW)
 GPIO.setup(cubby4, GPIO.OUT,initial=GPIO.LOW)
 GPIO.setup(cubby1Input, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+
+ser=serial.Serial("/dev/ttyUSB0", 9600)
+ser.baudrate=9600
+
+
 
 master = Tk()
 
@@ -130,10 +136,12 @@ def cubbyButton(spaceNum, cubbyID, label):
 
 	if(space==False): #if space was empty, set occupied and disable buttons
 		takePic(spaceNum)
-		i2.signalToUno(signalOut)
-		signalIn=0 #initialize signal from uno variable
-		while signalIn == 0: #while no signal from uno
-			signalIn= i2.signalFromUno() #get signal from uno. no idea if this works
+		#i2.signalToUno(signalOut)
+		ser.write(bytes(signalOut))
+		signalIn=bytes(0) #initialize signal from uno variable
+		while signalIn == bytes(0): #while no signal from uno
+			signalIn= ser.readline() #get signal from uno. no idea if this works
+			print(signalIn)
 			time.sleep(0.01)
 			Cubby1StoreButton.config(state='disabled') 
 			Cubby2StoreButton.config(state='disabled') 
@@ -147,16 +155,17 @@ def cubbyButton(spaceNum, cubbyID, label):
 		master.update()
 		label.config(text = "Cubby ocupied") #Display it's full
 	elif(space==True):                    #if space is occupied
-		i2.signalToUno(signalOut)
+		#i2.signalToUno(signalOut)
 		signalIn=0 #initialize signal from uno variable
-		while signalIn==0: #while no signal from uno
-			signalIn= i2.signalFromUno() #get signal from uno. no idea if this works
+		while True: #while no signal from uno
+			signalIn= sig.readline() #get signal from uno. no idea if this works
+			print(signalIn)
 			time.sleep(0.01)
 			Cubby1StoreButton.config(state='disabled') 
 			Cubby2StoreButton.config(state='disabled') 
 			Cubby3StoreButton.config(state='disabled') 
 			Cubby4StoreButton.config(state='disabled') 
-			master.update()
+			master.update
 		removePic(spaceNum)
 		Cubby1StoreButton.config(state='normal')
 		Cubby2StoreButton.config(state='normal')
