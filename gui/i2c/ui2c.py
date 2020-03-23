@@ -91,6 +91,7 @@ def cubbyButton(spaceNum, cubbyID, label):
 			pygame.mixer.music.play()
 			while pygame.mixer.music.get_busy() == True:
 				continue
+			signalOut=5
 	elif spaceNum==2:
 		global space2
 		space = space2
@@ -105,6 +106,7 @@ def cubbyButton(spaceNum, cubbyID, label):
 			pygame.mixer.music.play()
 			while pygame.mixer.music.get_busy() == True:
 				continue
+			signalOut=6
 	elif spaceNum==3:
 		global space3
 		space = space3
@@ -119,6 +121,7 @@ def cubbyButton(spaceNum, cubbyID, label):
 			pygame.mixer.music.play()
 			while pygame.mixer.music.get_busy() == True:
 				continue
+			signalOut=7
 	elif spaceNum==4:
 		global space4
 		space = space4
@@ -133,21 +136,26 @@ def cubbyButton(spaceNum, cubbyID, label):
 			pygame.mixer.music.play()
 			while pygame.mixer.music.get_busy() == True:
 				continue
+			signalOut=8
 
 	if(space==False): #if space was empty, set occupied and disable buttons
 		takePic(spaceNum)
 		#i2.signalToUno(signalOut)
-		ser.write(bytes(signalOut))
-		signalIn=bytes(0) #initialize signal from uno variable
-		while signalIn == bytes(0): #while no signal from uno
-			signalIn= ser.readline() #get signal from uno. no idea if this works
-			print(signalIn)
-			time.sleep(0.01)
+		#ser.write(bytes(signalOut))
+		#signalIn=bytes(0) #initialize signal from uno variable
+		#signalIn= ser.readline() #get signal from uno. no idea if this works
+		#print(signalIn)
+		inc=0
+		while True:
 			Cubby1StoreButton.config(state='disabled') 
 			Cubby2StoreButton.config(state='disabled') 
 			Cubby3StoreButton.config(state='disabled') 
 			Cubby4StoreButton.config(state='disabled')
 			master.update()
+			time.sleep(1)
+			inc= inc+1
+			if inc==5:
+				break
 		Cubby1StoreButton.config(state='normal')
 		Cubby2StoreButton.config(state='normal')
 		Cubby3StoreButton.config(state='normal')
@@ -155,17 +163,16 @@ def cubbyButton(spaceNum, cubbyID, label):
 		master.update()
 		label.config(text = "Cubby ocupied") #Display it's full
 	elif(space==True):                    #if space is occupied
-		#i2.signalToUno(signalOut)
-		signalIn=0 #initialize signal from uno variable
-		while True: #while no signal from uno
-			signalIn= sig.readline() #get signal from uno. no idea if this works
-			print(signalIn)
-			time.sleep(0.01)
-			Cubby1StoreButton.config(state='disabled') 
-			Cubby2StoreButton.config(state='disabled') 
-			Cubby3StoreButton.config(state='disabled') 
-			Cubby4StoreButton.config(state='disabled') 
-			master.update
+		ser.write(bytes(signalOut))
+		#signalIn=0 #initialize signal from uno variable
+		signalIn= sig.readline() #get signal from uno. no idea if this works
+		print(signalIn)
+		Cubby1StoreButton.config(state='disabled') 
+		Cubby2StoreButton.config(state='disabled') 
+		Cubby3StoreButton.config(state='disabled') 
+		Cubby4StoreButton.config(state='disabled') 
+		master.update
+		time.sleep(5)
 		removePic(spaceNum)
 		Cubby1StoreButton.config(state='normal')
 		Cubby2StoreButton.config(state='normal')
