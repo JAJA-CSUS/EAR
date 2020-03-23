@@ -72,7 +72,7 @@ int i2cCount = 0;
 
 //serial to PyPi
 int inByte = 0;
-
+int r = 1;
 
 //////////////////////////////////////////////////////////////////////////////////////
 //                                Board Set-up Section                              //
@@ -172,6 +172,12 @@ void loop() {
           } else {
              cs = 0;
           } 
+
+          if(Serial.available()){
+            r=r*(Serial.read()-'0');
+            Serial.println(r);
+            cs = 1;
+          }
       break;
 
 //state 1: nudge chassis forward
