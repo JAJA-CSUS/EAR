@@ -139,9 +139,9 @@ def cubbyButton(spaceNum, cubbyID, label):
 			signalOut=8
 
 	if(space==False): #if space was empty, set occupied and disable buttons
-		takePic(spaceNum)
 		#i2.signalToUno(signalOut)
-		#ser.write(bytes(signalOut))
+		ser.write(bytes(signalOut))
+		takePic(spaceNum)
 		#signalIn=bytes(0) #initialize signal from uno variable
 		#signalIn= ser.readline() #get signal from uno. no idea if this works
 		#print(signalIn)
@@ -165,8 +165,8 @@ def cubbyButton(spaceNum, cubbyID, label):
 	elif(space==True):                    #if space is occupied
 		ser.write(bytes(signalOut))
 		#signalIn=0 #initialize signal from uno variable
-		signalIn= sig.readline() #get signal from uno. no idea if this works
-		print(signalIn)
+		#signalIn= sig.readline() #get signal from uno. no idea if this works
+		#print(signalIn)
 		Cubby1StoreButton.config(state='disabled') 
 		Cubby2StoreButton.config(state='disabled') 
 		Cubby3StoreButton.config(state='disabled') 
