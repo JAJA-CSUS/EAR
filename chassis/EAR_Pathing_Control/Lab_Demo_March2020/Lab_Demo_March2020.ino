@@ -58,8 +58,9 @@ int cubby = 1;  // default assumes 1. Range 1-4
 
 // i2c setup, may not be necessary
 #include <Wire.h>
-#define sAddr 11  // PyPi took 8, iirc. I'll take 11 (check for hex vs decimal)
+#define sAddr 8  // PyPi chose 8, iirc (check for hex vs decimal)
 int i2cSwitch = 0;
+int i2cCount = 0;
 
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -89,7 +90,6 @@ void setup()
   Wire.onReceive(receiveData);
   Wire.onRequest(sendData);
 
-
   //Something else
   delay(3000);
 }
@@ -107,15 +107,19 @@ void receiveData(int ByteCount){
 }
 
 void sendData(){
-
-  if(i2cSwitch==1){
-    Wire.write("test 1");
+  if(i2cSwitch==0 && i2cCount < 200){
+    Wire.write(0);
+    i2cCount++;
+  } else {
+    Wire.write(5);
+  }
+  if(i2cSwitch!=0){
+    Wire.write(0);
   }
 }
 
 void loop() {
-  while(1)
-  {
+  while(1) {
     button1State = digitalRead(button1Pin);             //read value from button1
     Serial.print("Button 1 state = ");
     Serial.print(button1State);
@@ -125,194 +129,194 @@ void loop() {
     front_right_IR_state = analogRead(front_right_IR);  //read value from FR sensor and store value in front_right_IR_state
     
 
-      switch (cs) {
+    switch (cs) {
 //state 0: wait for button press
-        case 0:
-            digitalWrite(LED, HIGH);
-            
-            if (button1State == HIGH)
-            {
-               digitalWrite(LED,LOW);
-               cs = 1;
-            } else {
-               cs = 0;
-            } 
-        break;
+      case 0:
+          digitalWrite(LED, HIGH);
+          
+          if (button1State == HIGH)
+          {
+             digitalWrite(LED,LOW);
+             cs = 1;
+          } else {
+             cs = 0;
+          } 
+      break;
 
 //state 1: nudge chassis forward
-        case 1:
-            analogWrite(left_wheel_enable, 180);
-            analogWrite(right_wheel_enable, 180);
-            
-            digitalWrite(in1, LOW);
-            digitalWrite(in2, HIGH);  
-            digitalWrite(in3, LOW);
-            digitalWrite(in4, HIGH); 
-            delay(500);
-            cs = 2;
-        break;
+      case 1:
+          analogWrite(left_wheel_enable, 180);
+          analogWrite(right_wheel_enable, 180);
+          
+          digitalWrite(in1, LOW);
+          digitalWrite(in2, HIGH);  
+          digitalWrite(in3, LOW);
+          digitalWrite(in4, HIGH); 
+          delay(500);
+          cs = 2;
+      break;
 
 //state 2: path chassis towards shelves along black line
-        case 2:
-              if(front_right_IR_state > 500 && front_left_IR_state < 500)
-              {
-              Serial.println("turning left--right side IR off");
-            
-              digitalWrite(in1,LOW); 
-              digitalWrite (in2,LOW);                      
-              digitalWrite(in3,HIGH);
-              digitalWrite (in4,LOW);
-            
-              analogWrite (left_wheel_enable, vSpeed);
-             // analogWrite (right_wheel_enable, turn_speed);
-              }
-              
-            //left side IR sensor detects black line, right side does not
-            if(front_right_IR_state < 500 && front_left_IR_state > 500)
-              {
-              Serial.println("turning right--left side IR off");
-              
-              digitalWrite(in1,HIGH); 
-              digitalWrite (in2,LOW);                      
-              digitalWrite(in3,LOW);
-              digitalWrite (in4,LOW);
-            
-            //  analogWrite (left_wheel_enable, turn_speed);
-              analogWrite (right_wheel_enable, vSpeed);
-            
-              delay(turn_delay);
-              }
-              
-            //neither left or right IR sensors detect black line
-            if(front_right_IR_state < 500 && front_left_IR_state < 500)
-              {
-              Serial.println("going forward");
-            
-              digitalWrite(in1,LOW); 
-              digitalWrite (in2,HIGH);                      
-              digitalWrite(in3,LOW);
-              digitalWrite (in4,HIGH);
-             
-              analogWrite (left_wheel_enable, vSpeed);
-              analogWrite (right_wheel_enable, vSpeed);
-            
-              delay(turn_delay);
-              } 
-            
-            //if front left and front right IR sensors detect line, stop motors
-            if(front_right_IR_state > 500 && front_left_IR_state > 500)
-              { 
-              Serial.println("stop");
-              
-              analogWrite (left_wheel_enable, 0);
-              analogWrite (right_wheel_enable, 0);
-              }
-             if(front_right_IR_state > 500 && front_left_IR_state > 500)
-              { 
-                cs = 3;
-              } else
-              {
-                cs = 2;
-              }
-        break;
-        
-//state 3: move arm upwards/downwards to pick up/put down cubby
-        case 3:
-          if(haveBasket) {
-             digitalWrite(dirPin, LOW);
-             haveBasket = 0;
-          } else {
-            digitalWrite(dirPin, HIGH);
-            haveBasket = 1;
-          }
-            
-          // Spin the stepper motor 1 revolution quickly:
-          for (int i = 0; i < stepsPerRevolution; i++) {
-            // These four lines result in 1 step:
-            digitalWrite(stepPin, HIGH);
-            delayMicroseconds(700);
-            digitalWrite(stepPin, LOW);
-            delayMicroseconds(700);
-          }
-          delay(1000);
-          cs = 4;
-        break;
-
-//state 4: nudge backwards
-        case 4:
-            analogWrite(left_wheel_enable, 180);
-            analogWrite(right_wheel_enable, 180);
-            
-            digitalWrite(in1, HIGH);
-            digitalWrite(in2, LOW);  
-            digitalWrite(in3, HIGH);
-            digitalWrite(in4, LOW); 
-            delay(500);
-            cs = 5;
-        break;
-		
-//state 5: move chassis back towards start
-        case 5:   
-          //right side IR sensor detects black line, left side does not
-          if(front_right_IR_state > 500 && front_left_IR_state < 500) {
-            Serial.println("right side IR off");
-            
-            digitalWrite (in1,LOW);
-            digitalWrite(in2,LOW);                       
-            digitalWrite (in3,HIGH);
-            digitalWrite(in4,LOW);
-            
-            analogWrite (left_wheel_enable, vSpeed);
-            analogWrite (right_wheel_enable, turn_speed);
-          }
+      case 2:
+            if(front_right_IR_state > 500 && front_left_IR_state < 500)
+            {
+            Serial.println("turning left--right side IR off");
           
-          //left side IR sensor detects black line, right side does not
-          if(front_right_IR_state < 500 && front_left_IR_state > 500) {
-            Serial.println("left side IR off");
-            
-            digitalWrite (in1,HIGH);
-            digitalWrite(in2,LOW);                       
-            digitalWrite (in3,LOW);
-            digitalWrite(in4,LOW);
-            
-            analogWrite (left_wheel_enable, turn_speed);
-            analogWrite (right_wheel_enable, vSpeed);
-            
-            delay(turn_delay);
-          }
-          
-          //neither left or right IR sensors detect black line
-          if(front_right_IR_state < 500 && front_left_IR_state < 500) {
-            Serial.println("going backward");
-            
-            digitalWrite(in1,HIGH); 
+            digitalWrite(in1,LOW); 
             digitalWrite (in2,LOW);                      
             digitalWrite(in3,HIGH);
             digitalWrite (in4,LOW);
+          
+            analogWrite (left_wheel_enable, vSpeed);
+           // analogWrite (right_wheel_enable, turn_speed);
+            }
             
+          //left side IR sensor detects black line, right side does not
+          if(front_right_IR_state < 500 && front_left_IR_state > 500)
+            {
+            Serial.println("turning right--left side IR off");
+            
+            digitalWrite(in1,HIGH); 
+            digitalWrite (in2,LOW);                      
+            digitalWrite(in3,LOW);
+            digitalWrite (in4,LOW);
+          
+          //  analogWrite (left_wheel_enable, turn_speed);
+            analogWrite (right_wheel_enable, vSpeed);
+          
+            delay(turn_delay);
+            }
+            
+          //neither left or right IR sensors detect black line
+          if(front_right_IR_state < 500 && front_left_IR_state < 500)
+            {
+            Serial.println("going forward");
+          
+            digitalWrite(in1,LOW); 
+            digitalWrite (in2,HIGH);                      
+            digitalWrite(in3,LOW);
+            digitalWrite (in4,HIGH);
+           
             analogWrite (left_wheel_enable, vSpeed);
             analogWrite (right_wheel_enable, vSpeed);
-            
+          
             delay(turn_delay);
-          }
+            } 
           
           //if front left and front right IR sensors detect line, stop motors
-          if(front_right_IR_state > 500 && front_left_IR_state > 500) { 
+          if(front_right_IR_state > 500 && front_left_IR_state > 500)
+            { 
             Serial.println("stop");
             
             analogWrite (left_wheel_enable, 0);
             analogWrite (right_wheel_enable, 0);
-            cs = 0;
-          } else {
-            cs = 5;
-          }
-
-          break;
+            }
+           if(front_right_IR_state > 500 && front_left_IR_state > 500)
+            { 
+              cs = 3;
+            } else
+            {
+              cs = 2;
+            }
+      break;
+      
+//state 3: move arm upwards/downwards to pick up/put down cubby
+      case 3:
+        if(haveBasket) {
+           digitalWrite(dirPin, LOW);
+           haveBasket = 0;
+        } else {
+          digitalWrite(dirPin, HIGH);
+          haveBasket = 1;
+        }
           
-        default:
-          //cs = 0;
-          break;
-      }
+        // Spin the stepper motor 1 revolution quickly:
+        for (int i = 0; i < stepsPerRevolution; i++) {
+          // These four lines result in 1 step:
+          digitalWrite(stepPin, HIGH);
+          delayMicroseconds(700);
+          digitalWrite(stepPin, LOW);
+          delayMicroseconds(700);
+        }
+        delay(1000);
+        cs = 4;
+      break;
+
+//state 4: nudge backwards
+      case 4:
+          analogWrite(left_wheel_enable, 180);
+          analogWrite(right_wheel_enable, 180);
+          
+          digitalWrite(in1, HIGH);
+          digitalWrite(in2, LOW);  
+          digitalWrite(in3, HIGH);
+          digitalWrite(in4, LOW); 
+          delay(500);
+          cs = 5;
+      break;
+	
+//state 5: move chassis back towards start
+      case 5:   
+        //right side IR sensor detects black line, left side does not
+        if(front_right_IR_state > 500 && front_left_IR_state < 500) {
+          Serial.println("right side IR off");
+          
+          digitalWrite (in1,LOW);
+          digitalWrite(in2,LOW);                       
+          digitalWrite (in3,HIGH);
+          digitalWrite(in4,LOW);
+          
+          analogWrite (left_wheel_enable, vSpeed);
+          analogWrite (right_wheel_enable, turn_speed);
+        }
+        
+        //left side IR sensor detects black line, right side does not
+        if(front_right_IR_state < 500 && front_left_IR_state > 500) {
+          Serial.println("left side IR off");
+          
+          digitalWrite (in1,HIGH);
+          digitalWrite(in2,LOW);                       
+          digitalWrite (in3,LOW);
+          digitalWrite(in4,LOW);
+          
+          analogWrite (left_wheel_enable, turn_speed);
+          analogWrite (right_wheel_enable, vSpeed);
+          
+          delay(turn_delay);
+        }
+        
+        //neither left or right IR sensors detect black line
+        if(front_right_IR_state < 500 && front_left_IR_state < 500) {
+          Serial.println("going backward");
+          
+          digitalWrite(in1,HIGH); 
+          digitalWrite (in2,LOW);                      
+          digitalWrite(in3,HIGH);
+          digitalWrite (in4,LOW);
+          
+          analogWrite (left_wheel_enable, vSpeed);
+          analogWrite (right_wheel_enable, vSpeed);
+          
+          delay(turn_delay);
+        }
+        
+        //if front left and front right IR sensors detect line, stop motors
+        if(front_right_IR_state > 500 && front_left_IR_state > 500) { 
+          Serial.println("stop");
+          
+          analogWrite (left_wheel_enable, 0);
+          analogWrite (right_wheel_enable, 0);
+          cs = 0;
+        } else {
+          cs = 5;
+        }
+
+        break;
+        
+      default:
+        //cs = 0;
+        break;
+    }
   }
   delay(50); // may have to switch this back to 200?
 }
