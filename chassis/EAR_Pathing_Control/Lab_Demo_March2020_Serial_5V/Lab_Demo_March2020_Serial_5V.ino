@@ -82,7 +82,7 @@ void setup()
 {
   // initialize serial communication:
   Serial.begin(9600);
-  haveBasket = 0;
+  haveBasket = 1;
   
   //initialize the button pins
   pinMode(button1Pin, INPUT);
@@ -114,6 +114,11 @@ void setup()
             digitalWrite(stepPin, LOW);
             delayMicroseconds(stepTime);
           }
+          for (int i = 0; i < stepsPerRevolution; i++) {
+            digitalWrite(stepPin, HIGH);
+            delayMicroseconds(stepTime);
+            digitalWrite(stepPin, LOW);
+            delayMicroseconds(stepTime);
           digitalWrite(enaPin, HIGH);
   }
   //Something else
