@@ -63,6 +63,7 @@ int cubby = 1;  // default assumes 1. Range 1-4
 
 // skipStep
 int skipStep = 1;
+int loops = 2;
 
 // i2c setup, may not be necessary
 #include <Wire.h>
@@ -159,13 +160,16 @@ void loop() {
             Serial.println(r);
             cs = 1;
           }
+          if (loops <= 0) {
+            cs = 0;
+          }
       break;
 
 //state 1: nudge chassis forward
       case 1:
           analogWrite(left_wheel_enable, 180);
           analogWrite(right_wheel_enable, 180);
-          
+          loops--; // remove this, this is a lock code for the demo. remove this.
           digitalWrite(L1, LOW);
           digitalWrite(L2, HIGH);  
           digitalWrite(R1, LOW);
