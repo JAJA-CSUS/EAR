@@ -29,9 +29,9 @@ int turn_delay = 10;
 #define dirPin 2
 #define stepPin 3
 #define enaPin 4
-#define stepsPerRevolution 3
+#define stepsPerRevolution 800
 #define basketLimitPin A5              // limit switch for basket lifter arm
-#define stepTime 40                // was 700 for NEMA 17
+#define stepTime 700                // was 700 for NEMA 17
 int basketLimit = LOW;
 
 //Proximity Sensor
@@ -95,14 +95,33 @@ void setup()
   
   pinMode(stepPin, OUTPUT);
   pinMode(dirPin, OUTPUT);
+  pinMode(enaPin, OUTPUT);
+
+  pinMode(basketLimitPin, INPUT);
+
+  pinMode(front_left_IR, INPUT);
+  pinMode(front_right_IR, INPUT);
+  pinMode(rear_left_IR, INPUT);
+  pinMode(rear_right_IR, INPUT);
 
   // i2c
   Wire.begin(sAddr);
   Wire.onReceive(receiveData);
   Wire.onRequest(sendData);
 
+  if(analogRead(basketLimitPin) < 500){
+          digitalWrite(enaPin, LOW);  // active low
+          digitalWrite(dirPin, HIGH);
+          while(analogRead(basketLimitPin) < 500) {
+            digitalWrite(stepPin, HIGH);
+            delayMicroseconds(stepTime);
+            digitalWrite(stepPin, LOW);
+            delayMicroseconds(stepTime);
+          }
+          digitalWrite(enaPin, HIGH);
+  }
   //Something else
-  delay(3000);
+  delay(500);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -136,7 +155,6 @@ void loop() {
     front_right_IR_state = analogRead(front_right_IR);  //read value from FR sensor and store value in front_right_IR_state
     rear_left_IR_state = analogRead(rear_left_IR);    //read value from FL sensor and store value in front_left_IR_state 
     rear_right_IR_state = analogRead(rear_right_IR);  //read value from FR sensor and store value in front_right_IR_state
-    basketLimit = analogRead(basketLimitPin);
     if(Serial.available() > 0) {
       inByte = Serial.read();
       Serial.print(inByte + 10, DEC);
@@ -145,6 +163,7 @@ void loop() {
     switch (cs) {
 //state 0: wait for button press
       case 0:
+        
           digitalWrite(LED, HIGH);
           skipStep = 1; //remember to change this functionality
           if (button1State == HIGH) {
@@ -230,34 +249,30 @@ void loop() {
       
 //state 3: move arm upwards/downwards to pick up/put down cubby
       case 3:
+        delay(500);
+        digitalWrite(enaPin, LOW);  // active low
         if(haveBasket) {
-          digitalWrite(dirPin, LOW);
-          digitalWrite(enaPin, LOW);  // active low
+          digitalWrite(dirPin, HIGH);
           do {
-            basketLimit = digitalRead(basketLimitPin);
-
-            // These four lines result in 1 step:
+//            basketLimit = analogRead(basketLimitPin);
             digitalWrite(stepPin, HIGH);
             delayMicroseconds(stepTime);
             digitalWrite(stepPin, LOW);
             delayMicroseconds(stepTime);
-          } while(basketLimit < HIGH);
-          digitalWrite(enaPin, HIGH); // disable stepper controller after finish
+          } while(analogRead(basketLimitPin) < 500);
            haveBasket = 0;
         } else {
-          digitalWrite(enaPin, LOW);  // active low
-          digitalWrite(dirPin, HIGH);
+          digitalWrite(dirPin, LOW);
           for (int i = 0; i < stepsPerRevolution; i++) {
-            // These four lines result in 1 step:
             digitalWrite(stepPin, HIGH);
             delayMicroseconds(stepTime);
             digitalWrite(stepPin, LOW);
             delayMicroseconds(stepTime);
           }
           haveBasket = 1;
-          digitalWrite(enaPin, HIGH); // disable stepper controller after finish
         }
-        delay(1000);
+        digitalWrite(enaPin, HIGH); // disable stepper controller after finish
+        delay(500);
         cs = 4;
       break;
 
