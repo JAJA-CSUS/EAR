@@ -4,7 +4,7 @@
 #  uiCubbyScroll.py 
 # second semester deployable prototype gui
 # 3/19/20
-import i2cPi as i2
+#import i2cPi as i2
 import serial
 import time
 from tkinter import *
@@ -66,13 +66,13 @@ photos.append(PhotoImage(file = r"../images/greetimg3.png"))
 master.title("Assistant Robot GUI V2") 
 master.geometry("1650x400")
 
-Onlabel1 = Label(scrollable_frame, text="Cubby Empty (system start)")
+Onlabel1 = Label(scrollable_frame, text="Cubby Empty (system start)", font=25)
 Onlabel1.grid(row=0, column=0)
-Onlabel2 = Label(scrollable_frame, text="Cubby Empty (system start)")
+Onlabel2 = Label(scrollable_frame, text="Cubby Empty (system start)", font=25)
 Onlabel2.grid(row=0, column=1)
-Onlabel3 = Label(scrollable_frame, text="Cubby Empty (system start)")
+Onlabel3 = Label(scrollable_frame, text="Cubby Empty (system start)", font=25)
 Onlabel3.grid(row=0, column=2)
-Onlabel4 = Label(scrollable_frame, text="Cubby Empty (system start)")
+Onlabel4 = Label(scrollable_frame, text="Cubby Empty (system start)", font=25)
 Onlabel4.grid(row=0, column=3)
 
 def cubbyButton(spaceNum, cubbyID, label):
@@ -140,11 +140,15 @@ def cubbyButton(spaceNum, cubbyID, label):
 
 	if(space==False): #if space was empty, set occupied and disable buttons
 		#i2.signalToUno(signalOut)
-		ser.write(bytes(signalOut))
+		int1_encode = b'%d' %signalOut
+		ser.write(int1_encode)
+		while 1: 
+			if(ser.in_waiting >0):
+				line = ser.readline()
+				print(line)
+				break
 		takePic(spaceNum)
 		#signalIn=bytes(0) #initialize signal from uno variable
-		#signalIn= ser.readline() #get signal from uno. no idea if this works
-		#print(signalIn)
 		inc=0
 		while True:
 			Cubby1StoreButton.config(state='disabled') 
@@ -183,7 +187,7 @@ def cubbyButton(spaceNum, cubbyID, label):
 	spaceTF(spaceNum)
 
 def ExitButton():       #exit button creation
-	Exitbutton = Button(scrollable_frame, text="Exit", command= EandD, bg='red')
+	Exitbutton = Button(scrollable_frame, text="Exit", font=25, command= EandD, bg='red')
 	Exitbutton.grid(row=2, column = 5, sticky=W+E+N+S)
 
 def EandD():            #clean up led during exit
@@ -238,7 +242,6 @@ def create_window():
 		global helpWindow
 		helpWindow = Toplevel(master)
 		helpWindow.title("Help Page") 
-		helpWindow.geometry("400x400")
 		hWOpen=True
 		print(hWOpen)
 	else:
@@ -248,15 +251,15 @@ def create_window():
 
 
 
-Cubby1StoreButton = Button(scrollable_frame, text="GPIO 21 Cubby 1", command= partial(cubbyButton, 1, cubby1, Onlabel1))
+Cubby1StoreButton = Button(scrollable_frame, text="GPIO 21 Cubby 1",font= 25, command= partial(cubbyButton, 1, cubby1, Onlabel1))
 Cubby1StoreButton.grid(row=2, column = 0, sticky=W+E+N+S )
-Cubby2StoreButton = Button(scrollable_frame, text="GPIO 20 Cubby 2", command= partial(cubbyButton, 2, cubby2, Onlabel2))
+Cubby2StoreButton = Button(scrollable_frame, text="GPIO 20 Cubby 2",font= 25, command= partial(cubbyButton, 2, cubby2, Onlabel2))
 Cubby2StoreButton.grid(row=2, column = 1, sticky=W+E+N+S)
-Cubby3StoreButton = Button(scrollable_frame, text="GPIO 16 Cubby 3", command= partial(cubbyButton, 3, cubby3, Onlabel3))
+Cubby3StoreButton = Button(scrollable_frame, text="GPIO 16 Cubby 3",font= 25, command= partial(cubbyButton, 3, cubby3, Onlabel3))
 Cubby3StoreButton.grid(row=2, column = 2, sticky=W+E+N+S)
-Cubby4StoreButton = Button(scrollable_frame, text="GPIO 12 Cubby 4", command= partial(cubbyButton, 4, cubby4, Onlabel4))
+Cubby4StoreButton = Button(scrollable_frame, text="GPIO 12 Cubby 4",font= 25, command= partial(cubbyButton, 4, cubby4, Onlabel4))
 Cubby4StoreButton.grid(row=2, column = 3, sticky=W+E+N+S)
-helpButton = Button(scrollable_frame, text="Help Page", bg= 'blue', command=create_window)
+helpButton = Button(scrollable_frame, text="Help Page", font=25, bg= 'yellow', command=create_window)
 helpButton.grid(row=2, column = 4, sticky=W+E+N+S)
 ExitButton()
 scrollbar.grid(row=3, sticky= E+W)
