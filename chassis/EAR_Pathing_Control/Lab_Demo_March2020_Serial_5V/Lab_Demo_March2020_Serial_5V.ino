@@ -117,6 +117,7 @@ void setup()
           digitalWrite(enaPin, HIGH);
   }
   digitalWrite(enaPin, LOW);
+  digitalWrite(dirPin, LOW);
           for (int i = 0; i < stepsPerRevolution; i++) {
             digitalWrite(stepPin, HIGH);
             delayMicroseconds(stepTime);
