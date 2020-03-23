@@ -104,10 +104,6 @@ void setup()
   pinMode(rear_left_IR, INPUT);
   pinMode(rear_right_IR, INPUT);
 
-  // i2c
-  Wire.begin(sAddr);
-  Wire.onReceive(receiveData);
-  Wire.onRequest(sendData);
 
   if(analogRead(basketLimitPin) < 500){
           digitalWrite(enaPin, LOW);  // active low
@@ -128,26 +124,6 @@ void setup()
 //                                Main Code Section                                 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-void receiveData(int ByteCount){
-  while(Wire.available()){
-    i2cSwitch = Wire.read();
-    Serial.print("data received: ");
-    Serial.println(i2cSwitch);
-  }
-}
-
-void sendData(){
-  if(i2cSwitch==0 && i2cCount < 200){
-    Wire.write(0);
-    i2cCount++;
-  } else {
-    Wire.write(5);
-  }
-  if(i2cSwitch!=0){
-    Wire.write(0);
-  }
-}
-
 void loop() {
   while(1) {
     button1State = digitalRead(button1Pin);             //read value from button1
@@ -155,10 +131,6 @@ void loop() {
     front_right_IR_state = analogRead(front_right_IR);  //read value from FR sensor and store value in front_right_IR_state
     rear_left_IR_state = analogRead(rear_left_IR);    //read value from FL sensor and store value in front_left_IR_state 
     rear_right_IR_state = analogRead(rear_right_IR);  //read value from FR sensor and store value in front_right_IR_state
-    if(Serial.available() > 0) {
-      inByte = Serial.read();
-      Serial.print(inByte + 10, DEC);
-    }
 
     switch (cs) {
 //state 0: wait for button press
