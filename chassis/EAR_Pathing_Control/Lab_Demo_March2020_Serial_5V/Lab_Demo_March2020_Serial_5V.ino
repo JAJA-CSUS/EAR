@@ -6,13 +6,17 @@ The purpose of this code is to path a robot towards a cubby, to pick up a cubby 
 and bring it back to a point.
 */
 
+// todo: test the work done for the pathing selection
+// working busywait obstacle avoidance
+
 //////////////////////////////////////////////////////////////////////////////////////
 //                        Declaration Section                              //
 //////////////////////////////////////////////////////////////////////////////////////
 // Speed Control
 int vSpeed = 190;                  // MAX 255
 int turn_speed = 100;              // MAX 255 
-int turn_delay = 10;
+#define turn_delay 10              // regular step delay for the motor
+#define boost_delay 500            // skipping a marker
   
 // Motor Driver
 // Left Wheel
@@ -63,6 +67,7 @@ int cubby = 1;  // default assumes 1. Range 1-4
 // skipStep, allowing it to skip a step  (marker tape)
 int skipStep = 1;
 int loops = 2;
+int fwdSkip = 1;
 
 // i2c setup, may not be necessary
 // #include <Wire.h>
@@ -73,6 +78,7 @@ int loops = 2;
 //serial to PyPi
 int inByte = 0;
 int r = 1;
+
 
 //////////////////////////////////////////////////////////////////////////////////////
 //                                Board Set-up Section                              //
@@ -148,7 +154,7 @@ void loop() {
 
       case 0: // wait for button press
           digitalWrite(LED, HIGH);
-          skipStep = 1; //remember to change this functionality
+          skipStep = 2; //this should allow the reversing logic to work past the start/stop box and one "junction"
           if (button1State == HIGH) {
              digitalWrite(LED,LOW);
              cs = 1;  // 1, normally
@@ -163,6 +169,9 @@ void loop() {
           if (loops <= 0) {
             cs = 0;
           }
+          if((r==1)||(r==2)){
+            fwdSkip=1;
+          } 
       break;
 
       case 1: // nudge chassis forward
@@ -173,7 +182,7 @@ void loop() {
           digitalWrite(L2, HIGH);  
           digitalWrite(R1, LOW);
           digitalWrite(R2, HIGH); 
-          delay(500);
+          delay(boost_delay);
           cs = 2;
       break;
 
@@ -195,30 +204,39 @@ void loop() {
           digitalWrite (R2,LOW);
           //  analogWrite (left_wheel_enable, turn_speed);
           analogWrite (right_wheel_enable, vSpeed);
-          delay(turn_delay);
+          delay(turn_delay);  // why does this have it, but left doesn't?
         }
         
       // neither left or right IR sensors detect black line
       if(front_right_IR_state < 500 && front_left_IR_state < 500) { // Serial.println("going forward");
-          digitalWrite(L1,LOW); 
-          digitalWrite (L2,HIGH);                      
-          digitalWrite(R1,LOW);
-          digitalWrite (R2,HIGH);
-          analogWrite (left_wheel_enable, vSpeed);
-          analogWrite (right_wheel_enable, vSpeed);
+          goForward();
           delay(turn_delay);
         } 
       
-      // if front left and front right IR sensors detect line, stop motors
-        if(front_right_IR_state > 500 && front_left_IR_state > 500) { // Serial.println("stop");
+      // if front left and front right IR sensors detect line, stop motors, continue forward, or turn right (to alt path).
+      if(front_right_IR_state > 500 && front_left_IR_state > 500) { // Serial.println("stop");
+        if(fwdSkip > 0){
+          if(r==1) {  // if going to the main area, continue forward
+            goForward();
+          } else if(r==2){  // r==2, means it has to turn right to get to cubby 2
+            digitalWrite(L1,HIGH); 
+            digitalWrite (L2,LOW);                      
+            digitalWrite(R1,LOW);
+            digitalWrite (R2,LOW);
+            analogWrite (right_wheel_enable, vSpeed);
+            delay(boost_delay);       
+          }
+          fwdSkip--;  // decrement the marker skip
+        } else {  // end of the line... time to stop
           analogWrite (left_wheel_enable, 0);
           analogWrite (right_wheel_enable, 0);
         }
-       if(front_right_IR_state > 500 && front_left_IR_state > 500) { 
-          cs = 3;
-        } else {
-          cs = 2;
-        }
+      }
+      if(front_right_IR_state > 500 && front_left_IR_state > 500) { 
+        cs = 3;
+      } else {
+        cs = 2;
+      }
       break;
       
 
@@ -325,4 +343,13 @@ void loop() {
     }
   }
   delay(50); // may have to switch this back to 200?
+}
+
+void goForward(){
+  digitalWrite(L1,LOW); 
+  digitalWrite (L2,HIGH);                      
+  digitalWrite(R1,LOW);
+  digitalWrite (R2,HIGH);
+  analogWrite (left_wheel_enable, vSpeed);
+  analogWrite (right_wheel_enable, vSpeed);
 }
