@@ -8,32 +8,19 @@
 import serial
 import time
 from tkinter import *
-#import RPi.GPIO as GPIO
+
 from functools import partial
 import subprocess
 
 from PIL import ImageTk, Image
 import pygame
 
-#cubby gpio IDs
-cubby1=21
-cubby2=20
-cubby3=16
-cubby4=12
-cubby1Input=26
-
 space1=False #space 1 is initially empty etc
 space2=False
 space3=False
 space4=False
 hWOpen=False
-#GPIO.setwarnings(False)
-# GPIO.setmode(GPIO.BCM)
-# GPIO.setup(cubby1, GPIO.OUT,initial=GPIO.LOW)
-# GPIO.setup(cubby2, GPIO.OUT,initial=GPIO.LOW)
-# GPIO.setup(cubby3, GPIO.OUT,initial=GPIO.LOW)
-# GPIO.setup(cubby4, GPIO.OUT,initial=GPIO.LOW)
-# GPIO.setup(cubby1Input, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+
 
 # ser=serial.Serial("/dev/ttyUSB0", 9600)
 # ser.baudrate=9600
@@ -75,7 +62,7 @@ Onlabel3.grid(row=0, column=2)
 Onlabel4 = Label(scrollable_frame, text="Cubby Empty (system start)", font=25)
 Onlabel4.grid(row=0, column=3)
 
-def cubbyButton(spaceNum, cubbyID, label):
+def cubbyButton(spaceNum, label):
 
 	if spaceNum==1:
 		global space1 
@@ -156,7 +143,7 @@ def cubbyButton(spaceNum, cubbyID, label):
 			Cubby3StoreButton.config(state='disabled') 
 			Cubby4StoreButton.config(state='disabled')
 			master.update()
-			time.sleep(1)
+			time.sleep(0.2)
 			inc= inc+1
 			if inc==5:
 				break
@@ -185,14 +172,6 @@ def cubbyButton(spaceNum, cubbyID, label):
 		master.update()
 		label.config(text="Cubby Empty")
 	spaceTF(spaceNum)
-
-def ExitButton():       #exit button creation
-	Exitbutton = Button(scrollable_frame, text="Exit", font=25, command= EandD, bg='red')
-	Exitbutton.grid(row=2, column = 5, sticky=W+E+N+S)
-
-def EandD():            #clean up led during exit
-	master.destroy()
-	# GPIO.cleanup()
 
 def spaceTF(spaceNum):  #set if cubby is occupied or empty (T or F)
 	if spaceNum==1:
@@ -235,7 +214,11 @@ def removePic(spaceNum):
 		Cubby3StoreButton.config(image = '')
 	elif spaceNum==4:
 		Cubby4StoreButton.config(image = '')
-
+		
+def EandD():            #clean up led during exit
+	master.destroy()
+	# GPIO.cleanup()
+	
 def create_window():
 	global hWOpen
 	if hWOpen==False:
@@ -251,17 +234,18 @@ def create_window():
 
 
 
-Cubby1StoreButton = Button(scrollable_frame, text="GPIO 21 Cubby 1",font= 25, command= partial(cubbyButton, 1, cubby1, Onlabel1))
+Cubby1StoreButton = Button(scrollable_frame, text="STORE in Cubby 1",font= 25, command= partial(cubbyButton, 1, Onlabel1))
 Cubby1StoreButton.grid(row=2, column = 0, sticky=W+E+N+S )
-Cubby2StoreButton = Button(scrollable_frame, text="GPIO 20 Cubby 2",font= 25, command= partial(cubbyButton, 2, cubby2, Onlabel2))
+Cubby2StoreButton = Button(scrollable_frame, text="STORE in Cubby 2",font= 25, command= partial(cubbyButton, 2, Onlabel2))
 Cubby2StoreButton.grid(row=2, column = 1, sticky=W+E+N+S)
-Cubby3StoreButton = Button(scrollable_frame, text="GPIO 16 Cubby 3",font= 25, command= partial(cubbyButton, 3, cubby3, Onlabel3))
+Cubby3StoreButton = Button(scrollable_frame, text="STORE in Cubby 3",font= 25, command= partial(cubbyButton, 3, Onlabel3))
 Cubby3StoreButton.grid(row=2, column = 2, sticky=W+E+N+S)
-Cubby4StoreButton = Button(scrollable_frame, text="GPIO 12 Cubby 4",font= 25, command= partial(cubbyButton, 4, cubby4, Onlabel4))
+Cubby4StoreButton = Button(scrollable_frame, text="STORE in Cubby 4",font= 25, command= partial(cubbyButton, 4, Onlabel4))
 Cubby4StoreButton.grid(row=2, column = 3, sticky=W+E+N+S)
 helpButton = Button(scrollable_frame, text="Help Page", font=25, bg= 'yellow', command=create_window)
 helpButton.grid(row=2, column = 4, sticky=W+E+N+S)
-ExitButton()
+Exitbutton = Button(scrollable_frame, text="Exit", font=25, command= EandD, bg='red')
+Exitbutton.grid(row=2, column = 5, sticky=W+E+N+S)
 scrollbar.grid(row=3, sticky= E+W)
 canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
 canvas.configure(xscrollcommand=scrollbar.set)
