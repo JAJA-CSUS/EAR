@@ -69,12 +69,6 @@ int skipStep = 1;
 int loops = 2;
 int fwdSkip = 1;
 
-// i2c setup, may not be necessary
-// #include <Wire.h>
-// #define sAddr 8  // PyPi chose 8, iirc (check for hex vs decimal)
-// int i2cSwitch = 0;
-// int i2cCount = 0;
-
 //serial to PyPi
 int inByte = 0;
 int r = 1;
